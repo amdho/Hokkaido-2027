@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>北海道雪季 7 日行事曆（2/28 - 3/6）</title>
+  <style>
+    :root {
+      --bg-base: #0b0f19;
+      --bg-card: rgba(18, 26, 44, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      
+      /* 行事曆事件色系（參考 Apple Calendar 質感半透明） */
+      --ev-transit-bg: rgba(56, 189, 248, 0.18);
+      --ev-transit-border: #38bdf8;
+      --ev-transit-text: #bae6fd;
+
+      --ev-spot-bg: rgba(168, 85, 247, 0.18);
+      --ev-spot-border: #c084fc;
+      --ev-spot-text: #e9d5ff;
+
+      --ev-food-bg: rgba(249, 115, 22, 0.18);
+      --ev-food-border: #fb923c;
+      --ev-food-text: #fed7aa;
+
+      --ev-hotel-bg: rgba(34, 197, 94, 0.18);
+      --ev-hotel-border: #4ade80;
+      --ev-hotel-text: #bbf7d0;
+
+      --ev-shop-bg: rgba(236, 72, 153, 0.18);
+      --ev-shop-border: #f472b6;
+      --ev-shop-text: #fbcfe8;
+
+      --grid-hour-height: 52px; /* 每小時高度 */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang TC", "Noto Sans TC", sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* 雪花飄落畫布背景 */
+    #snow-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1360px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 頂部標題與圖例 */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+      gap: 16px;
+    }
+
+    .title-group h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #ffffff;
+      text-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+    }
+
+    .title-group p {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(10px);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    /* Apple Calendar 風格網格外框 */
+    .calendar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .calendar-scroll-wrapper {
+      overflow-x: auto;
+      position: relative;
+    }
+
+    /* 頂部星期與日期固定欄 */
+    .cal-header-row {
+      display: grid;
+      grid-template-columns: 60px repeat(7, minmax(150px, 1fr));
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(15, 23, 42, 0.85);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+
+    .cal-header-cell {
+      padding: 12px 8px;
+      text-align: center;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .cal-header-cell:last-child {
+      border-right: none;
+    }
+
+    .day-name {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .day-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      margin-top: 4px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 50%;
+      color: #fff;
+    }
+
+    .day-num.active {
+      background-color: #38bdf8;
+      color: #0b0f19;
+      font-weight: 700;
+    }
+
+    .day-sub {
+      font-size: 11px;
+      color: #38bdf8;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* 網格本體 */
+    .cal-body {
+      display: grid;
+      grid-template-columns: 60px repeat(7, minmax(150px, 1fr));
+      position: relative;
+      height: calc(16 * var(--grid-hour-height)); /* 7:00 ~ 23:00 共 16 小時 */
+    }
+
+    /* 左側時間軸刻度 */
+    .time-col {
+      display: grid;
+      grid-template-rows: repeat(16, var(--grid-hour-height));
+      border-right: 1px solid var(--border-color);
+      background: rgba(11, 15, 25, 0.6);
+      user-select: none;
+    }
+
+    .time-slot {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+      padding-right: 10px;
+      transform: translateY(-8px);
+    }
+
+    /* 每天垂直欄位 */
+    .day-col {
+      position: relative;
+      border-right: 1px solid var(--border-color);
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% var(--grid-hour-height);
+    }
+
+    .day-col:last-child {
+      border-right: none;
+    }
+
+    /* 行事曆事件卡片（Apple Calendar 標誌性樣式） */
+    .event-card {
+      position: absolute;
+      left: 4px;
+      right: 4px;
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 11px;
+      line-height: 1.35;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, z-index 0s;
+      border-left: 3.5px solid transparent;
+      z-index: 1;
+    }
+
+    .event-card:hover {
+      transform: scale(1.02);
+      z-index: 20;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+    }
+
+    .event-time {
+      font-weight: 600;
+      font-size: 10px;
+      opacity: 0.85;
+      margin-bottom: 2px;
+      display: block;
+    }
+
+    .event-title {
+      font-weight: 600;
+      font-size: 12px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .event-desc {
+      font-size: 11px;
+      opacity: 0.8;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* 類別配色 */
+    .ev-transit {
+      background: var(--ev-transit-bg);
+      border-color: var(--ev-transit-border);
+      color: var(--ev-transit-text);
+    }
+    .ev-spot {
+      background: var(--ev-spot-bg);
+      border-color: var(--ev-spot-border);
+      color: var(--ev-spot-text);
+    }
+    .ev-food {
+      background: var(--ev-food-bg);
+      border-color: var(--ev-food-border);
+      color: var(--ev-food-text);
+    }
+    .ev-hotel {
+      background: var(--ev-hotel-bg);
+      border-color: var(--ev-hotel-border);
+      color: var(--ev-hotel-text);
+    }
+    .ev-shop {
+      background: var(--ev-shop-bg);
+      border-color: var(--ev-shop-border);
+      color: var(--ev-shop-text);
+    }
+
+    /* 底部彈跳提示說明 Modal */
+    .detail-drawer {
+      margin-top: 18px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .detail-drawer strong {
+      color: #38bdf8;
+    }
+
+    /* 響應式優化 */
+    @media (max-width: 900px) {
+      body {
+        padding: 12px;
+      }
+      .title-group h1 {
+        font-size: 20px;
+      }
+      .cal-header-row {
+        grid-template-columns: 50px repeat(7, 160px);
+      }
+      .cal-body {
+        grid-template-columns: 50px repeat(7, 160px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 背景輕柔雪花 -->
+  <canvas id="snow-canvas"></canvas>
+
+  <div class="container">
+    <header>
+      <div class="title-group">
+        <h1>❄️ 北海道雪國 7 日視覺化行事曆</h1>
+        <p>2027/2/28 (六) – 3/6 (五) ｜ 函館進・新千歲出 ｜ 孝親海鮮放鬆行</p>
+      </div>
+
+      <!-- 行事曆色彩圖例 -->
+      <div class="legend-bar">
+        <div class="legend-item">
+          <span class="legend-dot" style="background: #38bdf8;"></span>
+          <span>交通/移動</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background: #c084fc;"></span>
+          <span>景點/滑雪</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background: #fb923c;"></span>
+          <span>海鮮Buffet/美食</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background: #f472b6;"></span>
+          <span>購物(小V鍋)</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot" style="background: #4ade80;"></span>
+          <span>溫泉/入住</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 主體行事曆面板 -->
+    <div class="calendar-card">
+      <div class="calendar-scroll-wrapper">
+        
+        <!-- 星期與日期表頭 -->
+        <div class="cal-header-row">
+          <div class="cal-header-cell">
+            <span class="day-name">時段</span>
+          </div>
+          
+          <!-- Day 1 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週六</div>
+            <div class="day-num active">28</div>
+            <div class="day-sub">函館夜景</div>
+          </div>
+
+          <!-- Day 2 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週日</div>
+            <div class="day-num">1</div>
+            <div class="day-sub">函館朝市/洞爺</div>
+          </div>
+
+          <!-- Day 3 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週一</div>
+            <div class="day-num">2</div>
+            <div class="day-sub">定山溪雪溪谷</div>
+          </div>
+
+          <!-- Day 4 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週二</div>
+            <div class="day-num">3</div>
+            <div class="day-sub">滑雪/小樽運河</div>
+          </div>
+
+          <!-- Day 5 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週三</div>
+            <div class="day-num">4</div>
+            <div class="day-sub">買小V鍋/札幌</div>
+          </div>
+
+          <!-- Day 6 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週四</div>
+            <div class="day-num">5</div>
+            <div class="day-sub">神宮/狸小路</div>
+          </div>
+
+          <!-- Day 7 -->
+          <div class="cal-header-cell">
+            <div class="day-name">週五</div>
+            <div class="day-num">6</div>
+            <div class="day-sub">新千歲返台</div>
+          </div>
+        </div>
+
+        <!-- 每日時間刻度與事件本體 (7:00 ~ 23:00，基準點 7:00 = 0px，每小時 52px) -->
+        <div class="cal-body">
+          
+          <!-- 時間刻度欄 -->
+          <div class="time-col">
+            <div class="time-slot">07:00</div>
+            <div class="time-slot">08:00</div>
+            <div class="time-slot">09:00</div>
+            <div class="time-slot">10:00</div>
+            <div class="time-slot">11:00</div>
+            <div class="time-slot">12:00</div>
+            <div class="time-slot">13:00</div>
+            <div class="time-slot">14:00</div>
+            <div class="time-slot">15:00</div>
+            <div class="time-slot">16:00</div>
+            <div class="time-slot">17:00</div>
+            <div class="time-slot">18:00</div>
+            <div class="time-slot">19:00</div>
+            <div class="time-slot">20:00</div>
+            <div class="time-slot">21:00</div>
+            <div class="time-slot">22:00</div>
+          </div>
+
+          <!-- Day 1 (2/28) -->
+          <div class="day-col">
+            <!-- 07:30 - 09:00 高鐵接駁 -->
+            <div class="event-card ev-transit" style="top: 26px; height: 78px;">
+              <span class="event-time">07:30 - 09:00</span>
+              <div class="event-title">🚅 嘉義 ➔ 桃機</div>
+              <div class="event-desc">高鐵至桃園轉機捷直達航廈</div>
+            </div>
+
+            <!-- 09:00 - 10:00 報到通關 -->
+            <div class="event-card ev-transit" style="top: 104px; height: 52px;">
+              <span class="event-time">09:00 - 10:00</span>
+              <div class="event-title">🧳 機場報到</div>
+              <div class="event-desc">託運行李與出境</div>
+            </div>
+
+            <!-- 12:00 - 16:30 飛行 -->
+            <div class="event-card ev-transit" style="top: 260px; height: 234px;">
+              <span class="event-time">12:00 - 16:30</span>
+              <div class="event-title">🛫 桃園飛函館</div>
+              <div class="event-desc">抵達函館機場辦理入境通關</div>
+            </div>
+
+            <!-- 17:15 - 18:00 機場巴士與入住 -->
+            <div class="event-card ev-hotel" style="top: 533px; height: 42px;">
+              <span class="event-time">17:15 - 18:00</span>
+              <div class="event-title">🏨 入住 Century Marina</div>
+              <div class="event-desc">搭乘帝產巴士抵達飯店放行李</div>
+            </div>
+
+            <!-- 18:15 - 19:45 函館夜景 -->
+            <div class="event-card ev-spot" style="top: 585px; height: 78px;">
+              <span class="event-time">18:15 - 19:45</span>
+              <div class="event-title">✨ 函館山百萬夜景</div>
+              <div class="event-desc">纜車直達山頂，免爬坡賞雪夜景</div>
+            </div>
+
+            <!-- 20:00 - 21:30 晚餐 -->
+            <div class="event-card ev-food" style="top: 676px; height: 78px;">
+              <span class="event-time">20:00 - 21:30</span>
+              <div class="event-title">🦐 海鮮Buffet ①</div>
+              <div class="event-desc">世紀濱海頂級自製海鮮丼放題</div>
+            </div>
+          </div>
+
+          <!-- Day 2 (3/1) -->
+          <div class="day-col">
+            <!-- 08:00 - 09:30 朝市 -->
+            <div class="event-card ev-food" style="top: 52px; height: 78px;">
+              <span class="event-time">08:00 - 09:30</span>
+              <div class="event-title">🦑 函館朝市散步</div>
+              <div class="event-desc">活釣烏賊、烤扇貝、室內無階梯</div>
+            </div>
+
+            <!-- 10:00 - 11:30 金森紅磚倉庫 -->
+            <div class="event-card ev-spot" style="top: 156px; height: 78px;">
+              <span class="event-time">10:00 - 11:30</span>
+              <div class="event-title">🏛️ 金森紅磚倉庫</div>
+              <div class="event-desc">平坦港灣漫步，品嚐乳酪蛋糕</div>
+            </div>
+
+            <!-- 11:45 - 12:45 小丑漢堡 -->
+            <div class="event-card ev-food" style="top: 247px; height: 52px;">
+              <span class="event-time">11:45 - 12:45</span>
+              <div class="event-title">🍔 小丑漢堡午餐</div>
+              <div class="event-desc">函館在地限定美味炸雞堡</div>
+            </div>
+
+            <!-- 13:53 - 15:45 JR北斗號 -->
+            <div class="event-card ev-transit" style="top: 358px; height: 98px;">
+              <span class="event-time">13:53 - 15:45</span>
+              <div class="event-title">🚆 JR特急北斗號</div>
+              <div class="event-desc">函館至洞爺/登別，窗外欣賞雪海景</div>
+            </div>
+
+            <!-- 16:30 - 18:00 溫泉飯店 -->
+            <div class="event-card ev-hotel" style="top: 494px; height: 78px;">
+              <span class="event-time">16:30 - 18:00</span>
+              <div class="event-title">♨️ 溫泉旅館 Check-in</div>
+              <div class="event-desc">換浴衣、泡雪景第一道暖湯</div>
+            </div>
+
+            <!-- 18:30 - 20:30 溫泉晚餐 -->
+            <div class="event-card ev-food" style="top: 598px; height: 104px;">
+              <span class="event-time">18:30 - 20:30</span>
+              <div class="event-title">🍱 溫泉會席晚宴</div>
+              <div class="event-desc">道產豬肉野菜平價精緻放鬆晚</div>
+            </div>
+          </div>
+
+          <!-- Day 3 (3/2) -->
+          <div class="day-col">
+            <!-- 08:30 - 10:00 JR前往札幌 -->
+            <div class="event-card ev-transit" style="top: 78px; height: 78px;">
+              <span class="event-time">08:30 - 10:00</span>
+              <div class="event-title">🚆 特急前往札幌</div>
+              <div class="event-desc">舒適車廂，長輩可補眠賞景</div>
+            </div>
+
+            <!-- 10:30 - 11:30 寄放大行李 -->
+            <div class="event-card ev-spot" style="top: 182px; height: 52px;">
+              <span class="event-time">10:30 - 11:30</span>
+              <div class="event-title">🧳 札幌站寄放行李</div>
+              <div class="event-desc">輕裝換乘，不拖大行李走雪地</div>
+            </div>
+
+            <!-- 12:00 - 13:00 河童Liner號 -->
+            <div class="event-card ev-transit" style="top: 260px; height: 52px;">
+              <span class="event-time">12:00 - 13:00</span>
+              <div class="event-title">🚌 河童LINER號直達</div>
+              <div class="event-desc">巴士直通定山溪溫泉溪谷</div>
+            </div>
+
+            <!-- 13:30 - 16:30 二見吊橋雪景 -->
+            <div class="event-card ev-spot" style="top: 338px; height: 156px;">
+              <span class="event-time">13:30 - 16:30</span>
+              <div class="event-title">❄️ 二見吊橋・雪饅頭</div>
+              <div class="event-desc">如奧入瀨溪流般的白雪溪谷絕景，漫步平緩步道泡足湯</div>
+            </div>
+
+            <!-- 17:00 - 18:30 入住溫泉飯店 -->
+            <div class="event-card ev-hotel" style="top: 520px; height: 65px;">
+              <span class="event-time">17:00 - 18:30</span>
+              <div class="event-title">🏨 入住定山溪萬世閣</div>
+              <div class="event-desc">露天雪景風呂舒緩身心</div>
+            </div>
+
+            <!-- 18:30 - 20:30 海鮮Buffet 2 -->
+            <div class="event-card ev-food" style="top: 598px; height: 104px;">
+              <span class="event-time">18:30 - 20:30</span>
+              <div class="event-title">🦀 海鮮Buffet ②</div>
+              <div class="event-desc">現煎牛排、甜蝦干貝奢華吃到飽</div>
+            </div>
+          </div>
+
+          <!-- Day 4 (3/3) -->
+          <div class="day-col">
+            <!-- 08:30 - 09:15 專車前往滑雪場 -->
+            <div class="event-card ev-transit" style="top: 78px; height: 42px;">
+              <span class="event-time">08:30 - 09:15</span>
+              <div class="event-title">🚌 前往札幌國際雪場</div>
+              <div class="event-desc">直達巴士約40分鐘</div>
+            </div>
+
+            <!-- 09:30 - 12:30 滑雪分流體驗 -->
+            <div class="event-card ev-spot" style="top: 130px; height: 156px;">
+              <span class="event-time">09:30 - 12:30</span>
+              <div class="event-title">⛷️ 滑雪體驗 / ☕ 賞雪</div>
+              <div class="event-desc">
+                • 你：租借裝備初階雙板體驗<br>
+                • 媽媽：景觀咖啡廳暖氣中賞雪景
+              </div>
+            </div>
+
+            <!-- 12:30 - 13:30 雪場午餐 -->
+            <div class="event-card ev-food" style="top: 286px; height: 52px;">
+              <span class="event-time">12:30 - 13:30</span>
+              <div class="event-title">🍜 雪場溫暖午餐</div>
+              <div class="event-desc">享用熱咖哩與道產味噌拉麵</div>
+            </div>
+
+            <!-- 14:00 - 14:45 巴士前往小樽 -->
+            <div class="event-card ev-transit" style="top: 364px; height: 42px;">
+              <span class="event-time">14:00 - 14:45</span>
+              <div class="event-title">🚌 專車直達小樽</div>
+              <div class="event-desc">雪場出發直達小樽運河區</div>
+            </div>
+
+            <!-- 15:00 - 17:00 童話十字路口 -->
+            <div class="event-card ev-spot" style="top: 416px; height: 104px;">
+              <span class="event-time">15:00 - 17:00</span>
+              <div class="event-title">🎵 音樂盒堂 & 甜點</div>
+              <div class="event-desc">北菓樓大泡芙、六花亭下午茶</div>
+            </div>
+
+            <!-- 17:15 - 18:30 小樽運河夜景 -->
+            <div class="event-card ev-spot" style="top: 533px; height: 65px;">
+              <span class="event-time">17:15 - 18:30</span>
+              <div class="event-title">🕯️ 小樽運河藍調時刻</div>
+              <div class="event-desc">煤油瓦斯燈映照雪景運河</div>
+            </div>
+
+            <!-- 19:00 - 20:30 晚餐與入住 -->
+            <div class="event-card ev-hotel" style="top: 624px; height: 78px;">
+              <span class="event-time">19:00 - 20:30</span>
+              <div class="event-title">🍣 小樽壽司 & 入住</div>
+              <div class="event-desc">入住 Dormy Inn 小樽（夜鳴拉麵）</div>
+            </div>
+          </div>
+
+          <!-- Day 5 (3/4) -->
+          <div class="day-col">
+            <!-- 09:30 - 10:15 海景電車回札幌 -->
+            <div class="event-card ev-transit" style="top: 130px; height: 42px;">
+              <span class="event-time">09:30 - 10:15</span>
+              <div class="event-title">🚆 JR 海景快速電車</div>
+              <div class="event-desc">左側欣賞雪白沙灘與蔚藍海岸</div>
+            </div>
+
+            <!-- 10:30 - 11:30 飯店放行李 -->
+            <div class="event-card ev-hotel" style="top: 182px; height: 52px;">
+              <span class="event-time">10:30 - 11:30</span>
+              <div class="event-title">🏨 札幌市區飯店放行李</div>
+              <div class="event-desc">定點住宿，輕便出發</div>
+            </div>
+
+            <!-- 12:00 - 13:30 湯咖哩午餐 -->
+            <div class="event-card ev-food" style="top: 260px; height: 78px;">
+              <span class="event-time">12:00 - 13:30</span>
+              <div class="event-title">🍛 札幌名物湯咖哩</div>
+              <div class="event-desc">溫熱蔬菜與炭烤嫩雞，暖胃暖身</div>
+            </div>
+
+            <!-- 14:00 - 16:30 買小V鍋重大任務 -->
+            <div class="event-card ev-shop" style="top: 364px; height: 130px;">
+              <span class="event-time">14:00 - 16:30</span>
+              <div class="event-title">🍳 採買 Vermicular 小V鍋</div>
+              <div class="event-desc">
+                Bic Camera 札幌店 / 大丸專櫃<br>
+                辦理退稅，直接送回飯店入行李箱
+              </div>
+            </div>
+
+            <!-- 17:00 - 18:30 大通公園散策 -->
+            <div class="event-card ev-spot" style="top: 520px; height: 65px;">
+              <span class="event-time">17:00 - 18:30</span>
+              <div class="event-title">🗼 大通公園 & 時計台</div>
+              <div class="event-desc">電視塔黃昏燈光、平坦好走</div>
+            </div>
+
+            <!-- 19:00 - 20:30 烤羊肉晚餐 -->
+            <div class="event-card ev-food" style="top: 624px; height: 78px;">
+              <span class="event-time">19:00 - 20:30</span>
+              <div class="event-title">🥩 成吉思汗烤羊肉</div>
+              <div class="event-desc">道產炭火燒肉香氣十足</div>
+            </div>
+          </div>
+
+          <!-- Day 6 (3/5) -->
+          <div class="day-col">
+            <!-- 09:00 - 11:30 北海道神宮 -->
+            <div class="event-card ev-spot" style="top: 104px; height: 130px;">
+              <span class="event-time">09:00 - 11:30</span>
+              <div class="event-title">⛩️ 北海道神宮參拜</div>
+              <div class="event-desc">參道雪松林美景，茶屋現烤「判官餅」</div>
+            </div>
+
+            <!-- 12:00 - 13:30 札幌拉麵午餐 -->
+            <div class="event-card ev-food" style="top: 260px; height: 78px;">
+              <span class="event-time">12:00 - 13:30</span>
+              <div class="event-title">🍜 味噌拉麵共和國</div>
+              <div class="event-desc">品嚐濃厚道地熱騰騰拉麵</div>
+            </div>
+
+            <!-- 14:00 - 17:00 狸小路拱廊採買 -->
+            <div class="event-card ev-shop" style="top: 364px; height: 156px;">
+              <span class="event-time">14:00 - 17:00</span>
+              <div class="event-title">🛍️ 狸小路免風雪血拼</div>
+              <div class="event-desc">頂棚商圈不怕下雪，買齊藥妝伴手禮，隨時有咖啡廳休息</div>
+            </div>
+
+            <!-- 17:30 - 18:00 入住頂級飯店 -->
+            <div class="event-card ev-hotel" style="top: 546px; height: 42px;">
+              <span class="event-time">17:30 - 18:00</span>
+              <div class="event-title">🏨 入住 Vessel Campana</div>
+              <div class="event-desc">現代浴場享受大浴池桑拿</div>
+            </div>
+
+            <!-- 18:30 - 20:30 海鮮Buffet 3 壓軸 -->
+            <div class="event-card ev-food" style="top: 598px; height: 104px;">
+              <span class="event-time">18:30 - 20:30</span>
+              <div class="event-title">🍣 海鮮Buffet ③ 告別夜</div>
+              <div class="event-desc">鮭魚卵放題、現切生魚片終極饗宴</div>
+            </div>
+          </div>
+
+          <!-- Day 7 (3/6) -->
+          <div class="day-col">
+            <!-- 07:00 - 07:45 出發前往機場 -->
+            <div class="event-card ev-transit" style="top: 0px; height: 42px;">
+              <span class="event-time">07:00 - 07:45</span>
+              <div class="event-title">🚆 快速Airport號</div>
+              <div class="event-desc">37分鐘直達新千歲機場</div>
+            </div>
+
+            <!-- 08:00 - 09:30 機場報到託運 -->
+            <div class="event-card ev-transit" style="top: 52px; height: 78px;">
+              <span class="event-time">08:00 - 09:30</span>
+              <div class="event-title">🧳 國際線報到託運</div>
+              <div class="event-desc">託運大行李與小V鍋，輕鬆通關</div>
+            </div>
+
+            <!-- 09:30 - 10:10 免稅店補貨 -->
+            <div class="event-card ev-shop" style="top: 130px; height: 35px;">
+              <span class="event-time">09:30 - 10:10</span>
+              <div class="event-title">🍫 買伴手禮候機</div>
+              <div class="event-desc">ROYCE巧克力、薯條三兄弟</div>
+            </div>
+
+            <!-- 10:40 - 14:15 班機起飛返台 -->
+            <div class="event-card ev-transit" style="top: 190px; height: 185px;">
+              <span class="event-time">10:40 - 14:15</span>
+              <div class="event-title">🛫 新千歲飛桃園</div>
+              <div class="event-desc">平安抵達台灣桃園國際機場</div>
+            </div>
+
+            <!-- 15:00 - 16:30 高鐵返家 -->
+            <div class="event-card ev-transit" style="top: 416px; height: 78px;">
+              <span class="event-time">15:00 - 16:30</span>
+              <div class="event-title">🚅 桃園搭高鐵回嘉義</div>
+              <div class="event-desc">順利返家休息整理行李</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- 提示條 -->
+    <div class="detail-drawer">
+      <div>
+        💡 <strong>視覺化時程說明：</strong>滑鼠游標移至活動區塊上方會<strong>微幅放大並凸顯細節</strong>。左側刻度為 24 小時制（7:00～23:00）。
+      </div>
+      <div>
+        步數設計：每日平均 <strong>8,000 ~ 11,500 步</strong>（嚴格控制在長輩負荷範圍內）
+      </div>
+    </div>
+  </div>
+
+  <!-- 雪花動態腳本 -->
+  <script>
+    const canvas = document.getElementById('snow-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let flakes = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    class Flake {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * -height;
+        this.radius = Math.random() * 2 + 1;
+        this.speedY = Math.random() * 0.8 + 0.5;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.5 + 0.2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        if (this.y > height) {
+          this.reset();
+          this.y = 0;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    function initFlakes() {
+      flakes = [];
+      const count = Math.floor(window.innerWidth / 15);
+      for (let i = 0; i < count; i++) {
+        flakes.push(new Flake());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      for (let flake of flakes) {
+        flake.update();
+        flake.draw();
+      }
+      requestAnimationFrame(animate);
+    }
+
+    window.addEventListener('resize', () => {
+      resize();
+      initFlakes();
+    });
+
+    resize();
+    initFlakes();
+    animate();
+  </script>
+</body>
+</html>
