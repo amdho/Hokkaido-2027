@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>北海道雪國 7 日漫遊手冊 ｜ 2/28 - 3/6</title>
   <style>
-    /* 指定色票定義
-       #c5d1eb : 冰川雪霜淡紫藍 (Ice Frost Blue)
-       #92afd7 : 柔霧天青藍 (Soft Sky Blue)
-       #5a7684 : 暮雪石板青 (Muted Slate Green-Blue)
-       #395b50 : 深杉松針綠 (Deep Pine Green)
-       #1f2f16 : 靜謐古森黛綠 (Obsidian Forest Dark)
+    /* 指定色票定義與語意配色系統
+       #c5d1eb : 冰川雪霜淡藍 (用於背景微光與購物主題)
+       #92afd7 : 柔霧天青藍 (嚴格專用於「交通」)
+       #5a7684 : 暮雪石板青 (嚴格專用於「景點/觀景」)
+       #395b50 : 深杉松針綠 (嚴格專用於「飯店/住宿」)
+       #d97706 / 暖茶色 : (嚴格專用於「用餐」)
+       #1f2f16 : 靜謐古森黛綠 (文字主色)
     */
     :root {
       --c-ice-light: #c5d1eb;
@@ -20,13 +21,34 @@
       --c-forest-dark: #1f2f16;
 
       --bg-body: #f7f9fd;
-      --bg-card: rgba(255, 255, 255, 0.9);
+      --bg-card: rgba(255, 255, 255, 0.92);
       --border-soft: rgba(146, 175, 215, 0.35);
       --border-card: rgba(90, 118, 132, 0.15);
       --shadow-sm: 0 4px 12px rgba(31, 47, 22, 0.04);
       --shadow-md: 0 12px 28px rgba(57, 91, 80, 0.08);
 
       --hour-row-h: 52px;
+
+      /* 嚴格一一對應的功能色票 */
+      --color-transit: #92afd7;
+      --color-transit-bg: rgba(146, 175, 215, 0.25);
+      --color-transit-text: #1d3e68;
+
+      --color-spot: #5a7684;
+      --color-spot-bg: rgba(90, 118, 132, 0.22);
+      --color-spot-text: #172c38;
+
+      --color-food: #d97706;
+      --color-food-bg: rgba(217, 119, 6, 0.18);
+      --color-food-text: #7c2d12;
+
+      --color-hotel: #395b50;
+      --color-hotel-bg: rgba(57, 91, 80, 0.2);
+      --color-hotel-text: #163328;
+
+      --color-shop: #818cf8;
+      --color-shop-bg: rgba(129, 140, 248, 0.22);
+      --color-shop-text: #312e81;
     }
 
     * {
@@ -48,7 +70,6 @@
                         radial-gradient(circle at 90% 85%, rgba(146, 175, 215, 0.35), transparent 50%);
     }
 
-    /* 輕盈細緻雪花背景 */
     #snow-canvas {
       position: fixed;
       top: 0;
@@ -66,7 +87,7 @@
       z-index: 1;
     }
 
-    /* 頂部 Header */
+    /* Header */
     header {
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
@@ -124,7 +145,7 @@
       border: 1px solid var(--c-sky-soft);
     }
 
-    /* 導覽切換 Tab */
+    /* 導覽列 */
     .nav-tabs {
       display: flex;
       flex-wrap: wrap;
@@ -162,7 +183,6 @@
       box-shadow: 0 4px 12px rgba(31, 47, 22, 0.08);
     }
 
-    /* 區塊容器 */
     .view-section {
       display: none;
       animation: fadeIn 0.25s ease forwards;
@@ -197,7 +217,7 @@
     }
 
     /* -------------------------------------------------------------
-       SECTION 1: 視覺化行事曆
+       SECTION 1: 視覺化行事曆（明確語意色彩）
     ------------------------------------------------------------- */
     .calendar-container {
       background: var(--bg-card);
@@ -222,7 +242,7 @@
 
     .cal-legend {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       flex-wrap: wrap;
     }
 
@@ -231,13 +251,13 @@
       align-items: center;
       gap: 6px;
       font-size: 12px;
-      color: var(--c-slate-muted);
-      font-weight: 500;
+      color: var(--c-forest-dark);
+      font-weight: 600;
     }
 
     .leg-dot {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       border-radius: 3px;
     }
 
@@ -250,7 +270,7 @@
       display: grid;
       grid-template-columns: 60px repeat(7, minmax(160px, 1fr));
       border-bottom: 1px solid var(--border-soft);
-      background: rgba(247, 249, 253, 0.92);
+      background: rgba(247, 249, 253, 0.94);
       position: sticky;
       top: 0;
       z-index: 5;
@@ -376,35 +396,39 @@
       overflow: hidden;
     }
 
-    .ev-transit {
-      background: rgba(146, 175, 215, 0.22);
-      border-color: var(--c-sky-soft);
-      color: #274b78;
+    /* 單一色彩對應單一意義 */
+    .cal-ev.ev-transit {
+      background: var(--color-transit-bg);
+      border-color: var(--color-transit);
+      color: var(--color-transit-text);
     }
-    .ev-spot {
-      background: rgba(90, 118, 132, 0.18);
-      border-color: var(--c-slate-muted);
-      color: #1f3744;
+
+    .cal-ev.ev-spot {
+      background: var(--color-spot-bg);
+      border-color: var(--color-spot);
+      color: var(--color-spot-text);
     }
-    .ev-food {
-      background: rgba(235, 175, 120, 0.22);
-      border-color: #d97706;
-      color: #8c3f00;
+
+    .cal-ev.ev-food {
+      background: var(--color-food-bg);
+      border-color: var(--color-food);
+      color: var(--color-food-text);
     }
-    .ev-buffet {
-      background: rgba(57, 91, 80, 0.16);
-      border-color: var(--c-pine-deep);
-      color: #1a3a30;
-      font-weight: 600;
+
+    .cal-ev.ev-hotel {
+      background: var(--color-hotel-bg);
+      border-color: var(--color-hotel);
+      color: var(--color-hotel-text);
     }
-    .ev-shop {
-      background: rgba(197, 209, 235, 0.4);
-      border-color: #7b94c0;
-      color: #233b63;
+
+    .cal-ev.ev-shop {
+      background: var(--color-shop-bg);
+      border-color: var(--color-shop);
+      color: var(--color-shop-text);
     }
 
     /* -------------------------------------------------------------
-       SECTION 2: 每日完整行程 (已移除「第一版」字眼)
+       SECTION 2: 每日完整行程
     ------------------------------------------------------------- */
     .itinerary-grid {
       display: grid;
@@ -511,7 +535,7 @@
     }
 
     /* -------------------------------------------------------------
-       SECTION 3: 購物清單 (獨立專屬區塊 + 可互動勾選 + 新增項目)
+       SECTION 3: 購物採買清單
     ------------------------------------------------------------- */
     .shopping-container {
       background: var(--bg-card);
@@ -573,7 +597,7 @@
     }
 
     .shop-item-card {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       border: 1px solid var(--border-card);
       border-radius: 12px;
       padding: 12px 16px;
@@ -669,7 +693,7 @@
     }
 
     /* -------------------------------------------------------------
-       SECTION 4: 行前預訂清單專區 (獨立提醒)
+       SECTION 4: 行前預訂清單
     ------------------------------------------------------------- */
     .booking-container {
       background: var(--bg-card);
@@ -743,7 +767,7 @@
     }
 
     /* -------------------------------------------------------------
-       SECTION 5: 費用表與行前備忘
+       SECTION 5: 費用預估與出行叮嚀
     ------------------------------------------------------------- */
     .bottom-info-grid {
       display: grid;
@@ -825,66 +849,70 @@
 
   <div class="main-wrap">
     
-    <!-- 頂部資訊區 (已去除長輩不適用的字眼) -->
     <header>
       <div class="header-info">
         <h1>❄️ 北海道雪國 7 日漫遊手冊</h1>
-        <p>2027/2/28（六）– 3/6（五） ｜ 嘉義出發 ➔ 函館進・新千歲出 ｜ 景觀溫泉美饌慢活行</p>
+        <p>2027/2/28（六）– 3/6（五） ｜ 嘉義出發 ➔ 函館進・新千歲出 ｜ 景觀溫泉美饌漫活行</p>
       </div>
 
       <div class="header-tags">
         <span class="pill-tag pill-pine">每日步數適中不趕路</span>
-        <span class="pill-tag pill-ice">3 晚頂級海鮮 Buffet</span>
+        <span class="pill-tag pill-ice">3 晚海鮮百匯</span>
         <span class="pill-tag pill-ice">札幌國際滑雪體驗</span>
         <span class="pill-tag pill-pine">札幌站採買小V鍋</span>
       </div>
     </header>
 
-    <!-- 導覽切換按鈕 -->
+    <!-- 導覽切換 -->
     <div class="nav-tabs">
       <button class="nav-btn active" onclick="switchTab('calendar-view', this)">
-        <span>📅</span> 視覺化行事曆（時程軸）
+        <span>📅</span> 視覺化行事曆
       </button>
       <button class="nav-btn" onclick="switchTab('cards-view', this)">
         <span>📖</span> 每日完整行程
       </button>
       <button class="nav-btn" onclick="switchTab('shopping-view', this)">
-        <span>🛒</span> 購物採買清單（可勾選）
+        <span>🛒</span> 購物採買清單
       </button>
       <button class="nav-btn" onclick="switchTab('booking-view', this)">
-        <span>🔔</span> 行前預訂清單（重點提醒）
+        <span>🔔</span> 行前預訂清單
       </button>
       <button class="nav-btn" onclick="switchTab('budget-view', this)">
-        <span>💰</span> 費用預估與實用叮嚀
+        <span>💰</span> 費用預估與出行叮嚀
       </button>
     </div>
 
     <!-- ==============================================================
-         分頁 1: 視覺化行事曆
+         分頁 1: 視覺化行事曆（明確單一顏色對應單一意義）
     ============================================================== -->
     <div id="calendar-view" class="view-section active">
       <div class="calendar-container">
         
         <div class="cal-header-bar">
           <div style="font-weight: 700; color: var(--c-forest-dark); font-size: 15px;">
-            每日時程安排 (07:00 – 23:00)
+            行程時程軸 (07:00 – 23:00)
           </div>
+          <!-- 顏色與意義 1:1 明確對應圖例 -->
           <div class="cal-legend">
             <div class="leg-item">
-              <span class="leg-dot" style="background: var(--c-sky-soft);"></span>
+              <span class="leg-dot" style="background: var(--color-transit);"></span>
               <span>交通移動</span>
             </div>
             <div class="leg-item">
-              <span class="leg-dot" style="background: var(--c-slate-muted);"></span>
-              <span>景點漫步/滑雪</span>
+              <span class="leg-dot" style="background: var(--color-spot);"></span>
+              <span>觀景體驗</span>
             </div>
             <div class="leg-item">
-              <span class="leg-dot" style="background: var(--c-pine-deep);"></span>
-              <span>海鮮Buffet/名湯</span>
+              <span class="leg-dot" style="background: var(--color-food);"></span>
+              <span>用餐美食</span>
             </div>
             <div class="leg-item">
-              <span class="leg-dot" style="background: #7b94c0;"></span>
-              <span>商圈採買</span>
+              <span class="leg-dot" style="background: var(--color-hotel);"></span>
+              <span>飯店名湯</span>
+            </div>
+            <div class="leg-item">
+              <span class="leg-dot" style="background: var(--color-shop);"></span>
+              <span>購物採買</span>
             </div>
           </div>
         </div>
@@ -958,6 +986,7 @@
 
             <!-- Day 1 -->
             <div class="cal-day-col">
+              <!-- 交通 (天青藍) -->
               <div class="cal-ev ev-transit" style="top: 26px; height: 78px;">
                 <span class="ev-time-text">07:30 - 09:00</span>
                 <div class="ev-title-text">🚅 嘉義 ➔ 桃機</div>
@@ -968,160 +997,252 @@
                 <div class="ev-title-text">🛫 桃園飛抵函館</div>
                 <div class="ev-desc-text">航程 4.5 小時，出關搭帝產巴士直達市區</div>
               </div>
+
+              <!-- 觀景 (石板青) -->
               <div class="cal-ev ev-spot" style="top: 585px; height: 78px;">
                 <span class="ev-time-text">18:15 - 19:45</span>
                 <div class="ev-title-text">✨ 函館山百萬夜景</div>
-                <div class="ev-desc-text">搭乘登山纜車，免爬坡賞絕景</div>
+                <div class="ev-desc-text">搭乘登山纜車，免爬坡賞夜景</div>
               </div>
-              <div class="cal-ev ev-buffet" style="top: 676px; height: 78px;">
+
+              <!-- 用餐 (暖茶橘) -->
+              <div class="cal-ev ev-food" style="top: 676px; height: 78px;">
                 <span class="ev-time-text">20:00 - 21:30</span>
-                <div class="ev-title-text">🦐 海鮮 Buffet ①</div>
+                <div class="ev-title-text">🦐 海鮮百匯 ①</div>
                 <div class="ev-desc-text">Century Marina 自助海鮮丼放題</div>
+              </div>
+
+              <!-- 飯店 (松針綠) -->
+              <div class="cal-ev ev-hotel" style="top: 760px; height: 50px;">
+                <span class="ev-time-text">21:30 - 23:00</span>
+                <div class="ev-title-text">♨️ 天宮之湯露天風呂</div>
+                <div class="ev-desc-text">飯店頂樓泡湯</div>
               </div>
             </div>
 
             <!-- Day 2 -->
             <div class="cal-day-col">
+              <!-- 用餐 -->
               <div class="cal-ev ev-food" style="top: 52px; height: 78px;">
                 <span class="ev-time-text">08:00 - 09:30</span>
-                <div class="ev-title-text">🦑 函館朝市散步</div>
-                <div class="ev-desc-text">釣烏賊、嚐海膽，全室內平坦好走</div>
+                <div class="ev-title-text">🦑 函館朝市海鮮</div>
+                <div class="ev-desc-text">現烤扇貝、嚐海膽，室內平坦好走</div>
               </div>
+
+              <!-- 觀景 -->
               <div class="cal-ev ev-spot" style="top: 156px; height: 78px;">
                 <span class="ev-time-text">10:00 - 11:30</span>
                 <div class="ev-title-text">🏛️ 金森紅磚倉庫群</div>
-                <div class="ev-desc-text">港灣拍照、品嚐起司蛋糕 Snaffle's</div>
+                <div class="ev-desc-text">港灣散步，品嚐乳酪蛋糕 Snaffle's</div>
               </div>
+
+              <!-- 交通 -->
               <div class="cal-ev ev-transit" style="top: 358px; height: 98px;">
                 <span class="ev-time-text">13:53 - 15:45</span>
                 <div class="ev-title-text">🚆 JR 特急北斗號</div>
                 <div class="ev-desc-text">舒適暖氣車廂，欣賞噴火灣雪海景色</div>
               </div>
-              <div class="cal-ev ev-spot" style="top: 494px; height: 182px;">
-                <span class="ev-time-text">16:30 - 20:30</span>
-                <div class="ev-title-text">♨️ 溫泉旅館放鬆</div>
-                <div class="ev-desc-text">入住洞爺或登別，享用會席料理與露天雪景風呂</div>
+
+              <!-- 飯店 -->
+              <div class="cal-ev ev-hotel" style="top: 494px; height: 78px;">
+                <span class="ev-time-text">16:30 - 18:00</span>
+                <div class="ev-title-text">♨️ 溫泉旅館 Check-in</div>
+                <div class="ev-desc-text">換穿浴衣享受硫磺名湯</div>
+              </div>
+
+              <!-- 用餐 -->
+              <div class="cal-ev ev-food" style="top: 598px; height: 90px;">
+                <span class="ev-time-text">18:30 - 20:00</span>
+                <div class="ev-title-text">🍱 溫泉會席料理</div>
+                <div class="ev-desc-text">道產豬肉野菜平價精緻晚宴</div>
               </div>
             </div>
 
             <!-- Day 3 -->
             <div class="cal-day-col">
+              <!-- 交通 -->
               <div class="cal-ev ev-transit" style="top: 78px; height: 78px;">
                 <span class="ev-time-text">08:30 - 10:00</span>
                 <div class="ev-title-text">🚆 JR特急至札幌</div>
-                <div class="ev-desc-text">札幌站寄存大件行李（輕裝前進）</div>
+                <div class="ev-desc-text">札幌站寄存大件行李</div>
               </div>
               <div class="cal-ev ev-transit" style="top: 260px; height: 52px;">
                 <span class="ev-time-text">12:00 - 13:00</span>
                 <div class="ev-title-text">🚌 河童LINER號</div>
-                <div class="ev-desc-text">預約直達定山溪溫泉溪谷</div>
+                <div class="ev-desc-text">直達定山溪溫泉溪谷</div>
               </div>
+
+              <!-- 觀景 -->
               <div class="cal-ev ev-spot" style="top: 338px; height: 156px;">
                 <span class="ev-time-text">13:30 - 16:30</span>
                 <div class="ev-title-text">❄️ 定山溪・雪饅頭溪谷</div>
-                <div class="ev-desc-text">二見吊橋！類似奧入瀨溪流的雪水墨景致，體驗戶外足湯</div>
+                <div class="ev-desc-text">二見吊橋！類似奧入瀨溪的雪水墨景色，泡戶外溫泉足湯</div>
               </div>
-              <div class="cal-ev ev-buffet" style="top: 598px; height: 104px;">
+
+              <!-- 飯店 -->
+              <div class="cal-ev ev-hotel" style="top: 520px; height: 55px;">
+                <span class="ev-time-text">17:00 - 18:00</span>
+                <div class="ev-title-text">🏨 入住定山溪萬世閣</div>
+                <div class="ev-desc-text">溪谷露天風呂名湯</div>
+              </div>
+
+              <!-- 用餐 -->
+              <div class="cal-ev ev-food" style="top: 598px; height: 104px;">
                 <span class="ev-time-text">18:30 - 20:30</span>
-                <div class="ev-title-text">🦀 海鮮 Buffet ②</div>
-                <div class="ev-desc-text">定山溪萬世閣現煎牛排、甜蝦干貝百匯</div>
+                <div class="ev-title-text">🦀 海鮮百匯 ②</div>
+                <div class="ev-desc-text">定山溪萬世閣現煎牛排、甜蝦干貝盛宴</div>
               </div>
             </div>
 
             <!-- Day 4 -->
             <div class="cal-day-col">
+              <!-- 觀景/滑雪 -->
               <div class="cal-ev ev-spot" style="top: 130px; height: 156px;">
                 <span class="ev-time-text">09:30 - 12:30</span>
-                <div class="ev-title-text">⛷️ 滑雪體驗 / ☕ 景觀賞雪</div>
+                <div class="ev-title-text">⛷️ 滑雪體驗 / ☕ 賞雪</div>
                 <div class="ev-desc-text">
                   • 年輕組：札幌國際初階綠道滑雪<br>
                   • 悠閒組：景觀咖啡廳暖氣中賞雪品茶
                 </div>
               </div>
+
+              <!-- 交通 -->
               <div class="cal-ev ev-transit" style="top: 364px; height: 42px;">
                 <span class="ev-time-text">14:00 - 14:45</span>
                 <div class="ev-title-text">🚌 專車直達小樽</div>
                 <div class="ev-desc-text">直達小樽童話十字路口</div>
               </div>
-              <div class="cal-ev ev-spot" style="top: 416px; height: 182px;">
-                <span class="ev-time-text">15:00 - 18:30</span>
+
+              <!-- 觀景 -->
+              <div class="cal-ev ev-spot" style="top: 416px; height: 160px;">
+                <span class="ev-time-text">15:00 - 18:00</span>
                 <div class="ev-title-text">🕯️ 小樽町 & 運河藍調</div>
-                <div class="ev-desc-text">音樂盒堂、北菓樓下午茶，日落時分看瓦斯燈映雪</div>
+                <div class="ev-desc-text">北菓樓下午茶，日落時分看瓦斯燈映雪</div>
               </div>
-              <div class="cal-ev ev-spot" style="top: 624px; height: 78px;">
-                <span class="ev-time-text">19:00 - 20:30</span>
-                <div class="ev-title-text">🍣 入住 Dormy Inn 小樽</div>
-                <div class="ev-desc-text">壽司晚餐，夜間免費夜鳴拉麵</div>
+
+              <!-- 用餐 -->
+              <div class="cal-ev ev-food" style="top: 590px; height: 60px;">
+                <span class="ev-time-text">18:15 - 19:30</span>
+                <div class="ev-title-text">🍣 小樽壽司料理</div>
+                <div class="ev-desc-text">品嚐在地新鮮握壽司</div>
+              </div>
+
+              <!-- 飯店 -->
+              <div class="cal-ev ev-hotel" style="top: 660px; height: 65px;">
+                <span class="ev-time-text">19:45 - 21:00</span>
+                <div class="ev-title-text">🏨 入住 Dormy Inn 小樽</div>
+                <div class="ev-desc-text">大浴場放鬆，享用夜鳴拉麵</div>
               </div>
             </div>
 
             <!-- Day 5 -->
             <div class="cal-day-col">
+              <!-- 交通 -->
               <div class="cal-ev ev-transit" style="top: 130px; height: 42px;">
                 <span class="ev-time-text">09:30 - 10:15</span>
                 <div class="ev-title-text">🚆 JR 海景快速電車</div>
-                <div class="ev-desc-text">小樽至札幌，左側窗景飽覽石狩灣白雪海景</div>
+                <div class="ev-desc-text">小樽至札幌，左側窗景緊鄰蔚藍海岸</div>
               </div>
+
+              <!-- 用餐 -->
               <div class="cal-ev ev-food" style="top: 260px; height: 78px;">
                 <span class="ev-time-text">12:00 - 13:30</span>
                 <div class="ev-title-text">🍛 暖胃湯咖哩</div>
-                <div class="ev-desc-text">享用名店 Suage+ 或 GARAKU</div>
+                <div class="ev-desc-text">名店 Suage+ 蔬菜嫩雞湯咖哩</div>
               </div>
+
+              <!-- 購物 (柔光紫) -->
               <div class="cal-ev ev-shop" style="top: 364px; height: 130px;">
                 <span class="ev-time-text">14:00 - 16:30</span>
-                <div class="ev-title-text">🍳 採購 Vermicular 小V鍋</div>
+                <div class="ev-title-text">🍳 採買 Vermicular 小V鍋</div>
                 <div class="ev-desc-text">
                   札幌站 Bic Camera / 大丸百貨專櫃<br>
                   出示護照退稅，直接提回市區飯店
                 </div>
               </div>
-              <div class="cal-ev ev-food" style="top: 624px; height: 78px;">
-                <span class="ev-time-text">19:00 - 20:30</span>
+
+              <!-- 觀景 -->
+              <div class="cal-ev ev-spot" style="top: 510px; height: 60px;">
+                <span class="ev-time-text">17:00 - 18:15</span>
+                <div class="ev-title-text">🗼 大通公園 & 時計台</div>
+                <div class="ev-desc-text">平坦好走的市中心雪景</div>
+              </div>
+
+              <!-- 用餐 -->
+              <div class="cal-ev ev-food" style="top: 590px; height: 70px;">
+                <span class="ev-time-text">18:30 - 20:00</span>
                 <div class="ev-title-text">🥩 成吉思汗烤羊肉</div>
-                <div class="ev-desc-text">炭火烤肉香氣，入住札幌平價市區飯店</div>
+                <div class="ev-desc-text">炭火烤肉香氣</div>
+              </div>
+
+              <!-- 飯店 -->
+              <div class="cal-ev ev-hotel" style="top: 675px; height: 50px;">
+                <span class="ev-time-text">20:15 - 21:30</span>
+                <div class="ev-title-text">🏨 入住札幌市區飯店</div>
+                <div class="ev-desc-text">三井花園/京王普雷利亞</div>
               </div>
             </div>
 
             <!-- Day 6 -->
             <div class="cal-day-col">
+              <!-- 觀景 -->
               <div class="cal-ev ev-spot" style="top: 104px; height: 130px;">
                 <span class="ev-time-text">09:00 - 11:30</span>
                 <div class="ev-title-text">⛩️ 北海道神宮參拜</div>
-                <div class="ev-desc-text">雪松林參道漫步，茶屋享用現烤「判官餅」</div>
+                <div class="ev-desc-text">雪松林參道漫步，茶屋享用現烤判官餅</div>
               </div>
-              <div class="cal-ev ev-shop" style="top: 364px; height: 156px;">
+
+              <!-- 用餐 -->
+              <div class="cal-ev ev-food" style="top: 250px; height: 70px;">
+                <span class="ev-time-text">12:00 - 13:30</span>
+                <div class="ev-title-text">🍜 札幌味噌拉麵</div>
+                <div class="ev-desc-text">拉麵共和國熱騰騰午餐</div>
+              </div>
+
+              <!-- 購物 -->
+              <div class="cal-ev ev-shop" style="top: 350px; height: 156px;">
                 <span class="ev-time-text">14:00 - 17:00</span>
-                <div class="ev-title-text">🛍️ 狸小路採買</div>
-                <div class="ev-desc-text">有遮頂棚不怕下雪，伴手禮藥妝採購，隨處可坐下喝茶</div>
+                <div class="ev-title-text">🛍️ 狸小路拱廊商圈</div>
+                <div class="ev-desc-text">頂棚避風雪，北菓樓泡芙、六花亭甜點與常備品採買</div>
               </div>
-              <div class="cal-ev ev-buffet" style="top: 598px; height: 104px;">
+
+              <!-- 飯店 -->
+              <div class="cal-ev ev-hotel" style="top: 520px; height: 60px;">
+                <span class="ev-time-text">17:30 - 18:30</span>
+                <div class="ev-title-text">🏨 入住 Vessel Campana</div>
+                <div class="ev-desc-text">大浴場與三溫暖享受</div>
+              </div>
+
+              <!-- 用餐 -->
+              <div class="cal-ev ev-food" style="top: 598px; height: 104px;">
                 <span class="ev-time-text">18:30 - 20:30</span>
-                <div class="ev-title-text">🍣 海鮮 Buffet ③ 壓軸夜</div>
-                <div class="ev-desc-text">入住 Vessel Campana，鮭魚卵干貝吃到飽</div>
+                <div class="ev-title-text">🍣 海鮮百匯 ③</div>
+                <div class="ev-desc-text">鮭魚卵放題、現切生魚片終極饗宴</div>
               </div>
             </div>
 
             <!-- Day 7 -->
             <div class="cal-day-col">
+              <!-- 交通 -->
               <div class="cal-ev ev-transit" style="top: 0px; height: 42px;">
                 <span class="ev-time-text">07:00 - 07:45</span>
                 <div class="ev-title-text">🚆 JR 快速Airport號</div>
-                <div class="ev-desc-text">37 分鐘直達新千歲機場航廈</div>
+                <div class="ev-desc-text">37 分鐘直達新千歲機場</div>
               </div>
               <div class="cal-ev ev-transit" style="top: 52px; height: 78px;">
                 <span class="ev-time-text">08:00 - 09:30</span>
                 <div class="ev-title-text">🧳 機場託運通關</div>
-                <div class="ev-desc-text">大行李箱（裝小V鍋）託運完成</div>
+                <div class="ev-desc-text">大行李箱託運（裝小V鍋）</div>
               </div>
               <div class="cal-ev ev-transit" style="top: 190px; height: 185px;">
                 <span class="ev-time-text">10:40 - 14:15</span>
                 <div class="ev-title-text">🛫 新千歲飛抵桃園</div>
-                <div class="ev-desc-text">平安抵達台灣</div>
+                <div class="ev-desc-text">平安返抵台灣</div>
               </div>
               <div class="cal-ev ev-transit" style="top: 416px; height: 78px;">
                 <span class="ev-time-text">15:00 - 16:30</span>
                 <div class="ev-title-text">🚅 桃園搭高鐵回嘉義</div>
-                <div class="ev-desc-text">順利返家整理戰利品</div>
+                <div class="ev-desc-text">順利返家</div>
               </div>
             </div>
 
@@ -1131,7 +1252,7 @@
     </div>
 
     <!-- ==============================================================
-         分頁 2: 每日完整行程 (已正式移除「第一版」字眼)
+         分頁 2: 每日完整行程
     ============================================================== -->
     <div id="cards-view" class="view-section">
       <div class="section-title">每日行程規劃與分流安排</div>
@@ -1148,15 +1269,15 @@
             <span class="steps-pill">約 8,000 步</span>
           </div>
           <div class="card-highlight">
-            搭乘纜車登上函館山，平穩且無須爬坡，輕鬆俯瞰海灣白雪與萬家燈火。
+            搭乘大型登山纜車登上函館山，平穩且無須爬坡，輕鬆俯瞰海灣白雪與萬家燈火。
           </div>
           <ul class="card-item-list">
             <li><span class="icon">🚅</span><span><strong>交通：</strong>嘉義高鐵 ➔ 桃園機場 ➔ 12:00-16:30 班機抵達函館 ➔ 帝產巴士直達函館站（20分）。</span></li>
-            <li><span class="icon">✨</span><span><strong>景點：</strong>入住放行李後，搭計程車至纜車站搭乘大型纜車直達山頂觀景台。</span></li>
-            <li><span class="icon">🦐</span><span><strong>晚餐：</strong>享用 Century Marina 頂級海鮮百匯（海鮮Buffet第1晚）。</span></li>
+            <li><span class="icon">✨</span><span><strong>觀景：</strong>入住放行李後，搭車至纜車站搭乘大型纜車直達山頂觀景台。</span></li>
+            <li><span class="icon">🦐</span><span><strong>用餐：</strong>享用 Century Marina 頂級海鮮百匯（海鮮百匯第1晚）。</span></li>
           </ul>
           <div class="card-footer-box">
-            <div class="hotel-line">🏨 Century Marina 函館 <span class="buffet-tag">海鮮Buffet ①</span></div>
+            <div class="hotel-line">🏨 Century Marina 函館 <span class="buffet-tag">海鮮百匯 ①</span></div>
           </div>
         </div>
 
@@ -1173,12 +1294,12 @@
             搭乘舒適暖氣 JR 特急北斗號沿噴火灣行駛，車廂平穩，沿途欣賞雪海一線風光。
           </div>
           <ul class="card-item-list">
-            <li><span class="icon">🦑</span><span><strong>上午：</strong>函館朝市室內走逛（釣烏賊、烤扇貝）➔ 漫步金森紅磚倉庫。</span></li>
+            <li><span class="icon">🦑</span><span><strong>上午：</strong>函館朝市室內走逛（烤扇貝、嚐海膽）➔ 漫步金森紅磚倉庫。</span></li>
             <li><span class="icon">🚆</span><span><strong>下午：</strong>搭乘 13:53 JR 特急北斗號前往洞爺/登別溫泉區。</span></li>
             <li><span class="icon">♨️</span><span><strong>傍晚：</strong>辦理入住，換穿浴衣享受硫磺名湯，放鬆腿部肌肉。</span></li>
           </ul>
           <div class="card-footer-box">
-            <div class="hotel-line">🏨 洞爺湖或登別平價溫泉飯店 <span style="font-size:11px; color:var(--c-slate-muted);">（平價省錢晚）</span></div>
+            <div class="hotel-line">🏨 洞爺湖或登別溫泉飯店</div>
           </div>
         </div>
 
@@ -1195,12 +1316,12 @@
             定山溪二見吊橋豐平川雪景，溪石覆蓋白雪宛如「雪饅頭」，極具冬日奧入瀨溪的幽靜感。
           </div>
           <ul class="card-item-list">
-            <li><span class="icon">🧳</span><span><strong>行李減負：</strong>特急抵札幌後將大行李寄放飯店，只帶隨身過夜包搭河童LINER號進定山溪。</span></li>
-            <li><span class="icon">❄️</span><span><strong>漫步：</strong>二見公園雪景平坦步道、定山源泉公園免費溫泉足湯暖腳。</span></li>
-            <li><span class="icon">🦀</span><span><strong>晚餐：</strong>定山溪溫泉飯店海鮮盛宴與現煎牛排。</span></li>
+            <li><span class="icon">🧳</span><span><strong>行李安排：</strong>特急抵札幌後將大行李寄放飯店，只帶隨身換洗衣物搭河童LINER號進定山溪。</span></li>
+            <li><span class="icon">❄️</span><span><strong>觀景：</strong>二見公園平坦雪景步道漫步、定山源泉公園戶外溫泉足湯暖腳。</span></li>
+            <li><span class="icon">🦀</span><span><strong>用餐：</strong>定山溪溫泉飯店現煎牛排與生鮮甜蝦干貝盛宴。</span></li>
           </ul>
           <div class="card-footer-box">
-            <div class="hotel-line">🏨 定山溪萬世閣或花楓葉 <span class="buffet-tag">海鮮Buffet ②</span></div>
+            <div class="hotel-line">🏨 定山溪萬世閣溫泉飯店 <span class="buffet-tag">海鮮百匯 ②</span></div>
           </div>
         </div>
 
@@ -1219,10 +1340,10 @@
           <ul class="card-item-list">
             <li><span class="icon">⛷️</span><span><strong>札幌國際雪場：</strong>2.5 小時初階體驗；休息區可舒適近距離眺望粉雪雪景。</span></li>
             <li><span class="icon">🚌</span><span><strong>專車直達小樽：</strong>下午專車前往小樽音樂盒堂、北菓樓享用巨大泡芙。</span></li>
-            <li><span class="icon">🕯️</span><span><strong>小樽運河：</strong>黃昏日落藍調時刻（Blue Hour）拍攝瓦斯燈映雪的經典景致。</span></li>
+            <li><span class="icon">🕯️</span><span><strong>觀景：</strong>黃昏日落藍調時刻（Blue Hour）拍攝瓦斯燈映雪的經典運河景致。</span></li>
           </ul>
           <div class="card-footer-box">
-            <div class="hotel-line">🏨 Dormy Inn 小樽（附免費夜鳴拉麵） <span style="font-size:11px; color:var(--c-slate-muted);">（平價省錢晚）</span></div>
+            <div class="hotel-line">🏨 Dormy Inn 小樽（附夜鳴拉麵）</div>
           </div>
         </div>
 
@@ -1241,10 +1362,10 @@
           <ul class="card-item-list">
             <li><span class="icon">🚆</span><span><strong>JR 海景快速：</strong>小樽 ➔ 札幌，窗外飽覽石狩灣白雪海浪。</span></li>
             <li><span class="icon">🍳</span><span><strong>買小V鍋：</strong>札幌站前 Bic Camera 或大丸百貨，憑護照辦理免稅與折扣結帳。</span></li>
-            <li><span class="icon">🍛</span><span><strong>美食：</strong>午餐 Suage+ 暖胃湯咖哩，晚餐成吉思汗炭烤羊肉。</span></li>
+            <li><span class="icon">🍛</span><span><strong>用餐：</strong>午餐 Suage+ 暖胃湯咖哩，晚餐成吉思汗炭烤羊肉。</span></li>
           </ul>
           <div class="card-footer-box">
-            <div class="hotel-line">🏨 京王普雷利亞或三井花園札幌 <span style="font-size:11px; color:var(--c-slate-muted);">（平價市區晚）</span></div>
+            <div class="hotel-line">🏨 京王普雷利亞或三井花園札幌</div>
           </div>
         </div>
 
@@ -1261,12 +1382,12 @@
             狸小路商店街全段有遮雨頂棚，完全不怕風雪，走累了隨處有茶寮咖啡廳可休息。
           </div>
           <ul class="card-item-list">
-            <li><span class="icon">⛩️</span><span><strong>神宮漫步：</strong>穿過雪松林參道，在六花亭神宮茶屋品嚐現烤「判官餅」。</span></li>
-            <li><span class="icon">🛍️</span><span><strong>狸小路採買：</strong>藥妝、零食、伴手禮一次採購齊全。</span></li>
-            <li><span class="icon">🍣</span><span><strong>鮭魚卵放題：</strong>入住 Vessel Campana，大浴場泡湯後享受第三晚海鮮盛宴！</span></li>
+            <li><span class="icon">⛩️</span><span><strong>觀景：</strong>穿過雪松林參道，在六花亭神宮茶屋品嚐現烤熱呼呼「判官餅」。</span></li>
+            <li><span class="icon">🛍️</span><span><strong>狸小路採買：</strong>特色甜點伴手禮與常備品一次採購齊全。</span></li>
+            <li><span class="icon">🍣</span><span><strong>海鮮壓軸：</strong>入住 Vessel Campana，大浴場泡湯後享受第三晚海鮮百匯！</span></li>
           </ul>
           <div class="card-footer-box">
-            <div class="hotel-line">🏨 Vessel Hotel Campana 薄野 <span class="buffet-tag">海鮮Buffet ③</span></div>
+            <div class="hotel-line">🏨 Vessel Hotel Campana 薄野 <span class="buffet-tag">海鮮百匯 ③</span></div>
           </div>
         </div>
 
@@ -1274,7 +1395,7 @@
         <div class="day-card">
           <div class="card-top">
             <div>
-              <div class="card-day-title">Day 7 ｜ 新千歲機場免稅・平安返嘉</div>
+              <div class="card-day-title">Day 7 ｜ 新千歲機場・平安返嘉</div>
               <div class="card-date-badge">3/6（週五）</div>
             </div>
             <span class="steps-pill">約 6,000 步</span>
@@ -1284,7 +1405,7 @@
           </div>
           <ul class="card-item-list">
             <li><span class="icon">🚆</span><span><strong>交通：</strong>07:00 札幌站搭 JR 快速 Airport 號直通新千歲國內/國際航廈。</span></li>
-            <li><span class="icon">🧳</span><span><strong>通關與免稅：</strong>行李托運後入關採買 ROYCE 生巧克力與薯條三兄弟。</span></li>
+            <li><span class="icon">🧳</span><span><strong>通關託運：</strong>行李托運確認，進入候機室。</span></li>
             <li><span class="icon">🛫</span><span><strong>返程：</strong>10:40-14:15 飛抵桃園，銜接高鐵返回嘉義。</span></li>
           </ul>
           <div class="card-footer-box">
@@ -1296,33 +1417,32 @@
     </div>
 
     <!-- ==============================================================
-         分頁 3: 購物採買清單 (獨立專區 + 可互動勾選 + 可即時新增項目)
+         分頁 3: 購物採買清單（精選北海道特色必買）
     ============================================================== -->
     <div id="shopping-view" class="view-section">
       <div class="shopping-container">
-        <div class="section-title">購物採買清單（點擊即可打勾完成）</div>
+        <div class="section-title">購物採買清單</div>
         <p style="font-size: 13.5px; color: var(--c-slate-muted); margin-bottom: 18px;">
-          此清單支援即時勾選與新增。可在此隨時記錄想買的藥妝、零食伴手禮或電器：
+          此處已過濾一般普通機場零食，僅收錄北海道在地代表性銘菓、雪季裝備與指定廚具：
         </p>
 
         <!-- 新增商品輸入欄 -->
         <div class="shopping-input-bar">
-          <input type="text" id="new-item-input" class="shopping-input" placeholder="輸入想採買的商品名稱（例如：合利他命、六花亭蘭姆葡萄夾心餅...）" onkeypress="if(event.key==='Enter') addShoppingItem()">
+          <input type="text" id="new-item-input" class="shopping-input" placeholder="輸入想增加的採買項目..." onkeypress="if(event.key==='Enter') addShoppingItem()">
           <button class="btn-add-item" onclick="addShoppingItem()">
-            <span>＋</span> 新增清單項目
+            <span>＋</span> 新增項目
           </button>
         </div>
 
         <!-- 購物清單網格容器 -->
         <div class="shop-items-grid" id="shopping-list-grid">
           
-          <!-- 小V鍋核心項 -->
           <div class="shop-item-card" onclick="toggleShop(this)">
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
                 <span class="shop-text">Vermicular 小V鍋（鑄鐵琺瑯平底鍋 或 IH電子鑄鐵鍋）</span>
-                <span class="shop-badge">📍 札幌 Bic Camera 或 大丸百貨（記得出示護照退稅）</span>
+                <span class="shop-badge">📍 札幌 Bic Camera 或 大丸百貨（憑護照辦理免稅退稅）</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1332,7 +1452,7 @@
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
-                <span class="shop-text">簡易橡膠冰爪（防滑爪）</span>
+                <span class="shop-text">鞋底防滑橡膠冰爪（簡易防滑爪）</span>
                 <span class="shop-badge">📍 Day 1 抵達函館超商 (Seicomart/7-11) 購買，套在靴底防滑</span>
               </div>
             </div>
@@ -1343,8 +1463,19 @@
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
-                <span class="shop-text">Snaffle's 輕乳酪蛋糕（Catchcakes）</span>
-                <span class="shop-badge">📍 函館金森倉庫 / 函館車站門市</span>
+                <span class="shop-text">Snaffle's 輕乳酪起司蛋糕（Catchcakes）</span>
+                <span class="shop-badge">📍 函館限定！金森紅磚倉庫門市或函館車站門市</span>
+              </div>
+            </div>
+            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+          </div>
+
+          <div class="shop-item-card" onclick="toggleShop(this)">
+            <div class="shop-left">
+              <div class="custom-checkbox"></div>
+              <div class="shop-text-wrap">
+                <span class="shop-text">北菓樓「開拓おかき」道產米果（枝幸帆立貝/增毛甜蝦口味）</span>
+                <span class="shop-badge">📍 小樽童話十字路口本店（北海道正統鹹香伴手禮首選）</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1355,7 +1486,7 @@
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
                 <span class="shop-text">北菓樓「妖精之森」年輪蛋糕 & 夢不思議巨大泡芙</span>
-                <span class="shop-badge">📍 小樽童話十字路口本店</span>
+                <span class="shop-badge">📍 小樽本店限定下午茶現吃與精緻盒裝</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1365,8 +1496,8 @@
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
-                <span class="shop-text">六花亭 蘭姆葡萄夾心餅乾 & 判官餅</span>
-                <span class="shop-badge">📍 北海道神宮茶屋（現場現烤判官餅）/ 狸小路門市</span>
+                <span class="shop-text">六花亭「判官餅」（蕎麥麻糬包紅豆餡，僅神宮店現烤）</span>
+                <span class="shop-badge">📍 北海道神宮茶屋限定（現烤熱騰騰享用）</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1376,8 +1507,8 @@
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
-                <span class="shop-text">常備藥妝（合利他命 EX Plus、EVE、大正感冒微粒、防裂護手霜）</span>
-                <span class="shop-badge">📍 札幌狸小路 鶴羽藥妝 / 札幌藥妝（有免稅＋折扣券）</span>
+                <span class="shop-text">六花亭 蘭姆葡萄十勝夾心奶油酥餅（Marusei Butter Sand）</span>
+                <span class="shop-badge">📍 札幌狸小路門市或百貨專櫃</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1387,8 +1518,8 @@
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
-                <span class="shop-text">ROYCE 生巧克力 & 巧克力洋芋片</span>
-                <span class="shop-badge">📍 新千歲機場出境免稅店（提供保冷袋）</span>
+                <span class="shop-text">LeTAO「雙層乳酪蛋糕」（Double Fromage 原味/宇治抹茶）</span>
+                <span class="shop-badge">📍 小樽童話十字路口總店</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1398,8 +1529,19 @@
             <div class="shop-left">
               <div class="custom-checkbox"></div>
               <div class="shop-text-wrap">
-                <span class="shop-text">薯條三兄弟（Jaga Pokkuru）</span>
-                <span class="shop-badge">📍 新千歲機場國際線候機室免稅店</span>
+                <span class="shop-text">北見薄荷油（天然薄荷噴霧、滾珠棒）</span>
+                <span class="shop-badge">📍 北海道百年名產，狸小路藥妝或土產店</span>
+              </div>
+            </div>
+            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+          </div>
+
+          <div class="shop-item-card" onclick="toggleShop(this)">
+            <div class="shop-left">
+              <div class="custom-checkbox"></div>
+              <div class="shop-text-wrap">
+                <span class="shop-text">日本常備品（合利他命 EX Plus、EVE、大正微粒、保濕護手霜）</span>
+                <span class="shop-badge">📍 札幌狸小路 鶴羽藥妝 / 札幌藥妝</span>
               </div>
             </div>
             <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
@@ -1410,39 +1552,39 @@
     </div>
 
     <!-- ==============================================================
-         分頁 4: 行前預訂清單專區 (獨立提醒)
+         分頁 4: 行前預訂清單
     ============================================================== -->
     <div id="booking-view" class="view-section">
       <div class="booking-container">
-        <div class="section-title">行前預訂項目提醒（建議提前規劃）</div>
+        <div class="section-title">行前預訂清單</div>
         <p style="font-size: 13.5px; color: var(--c-slate-muted); margin-bottom: 12px;">
-          雪季期間北海道熱門車次與住宿非常搶手，建議依照以下時程陸續完成預約：
+          雪季期間熱門車次與飯店較為搶手，建議依照下列建議時程安排：
         </p>
 
         <div class="booking-grid">
           
           <div class="booking-card">
             <div class="booking-header">
-              <span class="booking-title">🏨 3 晚頂級海鮮 Buffet 飯店</span>
-              <span class="booking-status status-urgent">最優先</span>
+              <span class="booking-title">🏨 3 晚海鮮百匯飯店</span>
+              <span class="booking-status status-urgent">建議優先</span>
             </div>
             <div class="booking-desc">
-              1. 函館 Century Marina（搶手度高）<br>
+              1. 函館 Century Marina（熱門）<br>
               2. 定山溪萬世閣 / 花楓葉（含早晚餐）<br>
               3. 札幌 Vessel Campana（海鮮早餐）
             </div>
-            <div class="booking-timing">⏰ 建議時間：出發前 2~3 個月前訂房</div>
+            <div class="booking-timing">⏰ 出發前 2~3 個月前訂房</div>
           </div>
 
           <div class="booking-card">
             <div class="booking-header">
-              <span class="booking-title">🚌 河童LINER號 巴士預約席</span>
-              <span class="booking-status status-urgent">必預約</span>
+              <span class="booking-title">🚌 河童LINER號 巴士指定席</span>
+              <span class="booking-status status-urgent">需預約席</span>
             </div>
             <div class="booking-desc">
-              札幌站往返定山溪的直達巴士。雪季全車為預約指定席，未預約可能需在戶外排一般公車（吹冷風且無座位）。
+              札幌站往返定山溪的直達巴士。冬季全車為預約制座席，可避免在戶外排一般路線公車。
             </div>
-            <div class="booking-timing">⏰ 建議時間：乘車日 1 個月前開放訂位</div>
+            <div class="booking-timing">⏰ 乘車日 1 個月前開放訂位</div>
           </div>
 
           <div class="booking-card">
@@ -1451,20 +1593,20 @@
               <span class="booking-status status-warm">建議提前</span>
             </div>
             <div class="booking-desc">
-              函館至洞爺/登別段（約 1.5~2 小時）。冬季行李多，務必提前透過 JR 官方網站預訂「附特大行李放置處」的指定席座位。
+              函館至洞爺/登別段（約 1.5~2 小時）。冬季行李較多，可提前於 JR 官網預訂「附特大行李放置處」之指定席座位。
             </div>
-            <div class="booking-timing">⏰ 建議時間：乘車日 1 個月前開放訂票</div>
+            <div class="booking-timing">⏰ 乘車日 1 個月前開放訂票</div>
           </div>
 
           <div class="booking-card">
             <div class="booking-header">
-              <span class="booking-title">⛷️ 札幌國際滑雪場 裝備/教練</span>
+              <span class="booking-title">⛷️ 札幌國際滑雪場 裝備/課程</span>
               <span class="booking-status status-warm">線上先選</span>
             </div>
             <div class="booking-desc">
-              若想體驗雙板滑雪，可預先於官網預約雪板/雪靴租借尺寸，或報名 2 小時初學者體驗課程，現場可直接取裝備省去排隊。
+              若想體驗雙板滑雪，可預先於官網預約雪板/雪靴租借尺寸，或報名 2 小時初學者體驗課程，現場可直接取裝備。
             </div>
-            <div class="booking-timing">⏰ 建議時間：出發前 3~4 週</div>
+            <div class="booking-timing">⏰ 出發前 3~4 週</div>
           </div>
 
           <div class="booking-card">
@@ -1473,9 +1615,9 @@
               <span class="booking-status status-warm">乘車前28天</span>
             </div>
             <div class="booking-desc">
-              2/28 早上由嘉義出發前往桃園高鐵站、3/6 下午返回嘉義的高鐵對號座車票。
+              2/28 早晨嘉義出發至桃園高鐵站、3/6 下午返回嘉義的高鐵對號座車票。
             </div>
-            <div class="booking-timing">⏰ 建議時間：乘車前 28 天零時開搶</div>
+            <div class="booking-timing">⏰ 乘車前 28 天零時開放</div>
           </div>
 
           <div class="booking-card">
@@ -1484,9 +1626,9 @@
               <span class="booking-status status-warm">出發前2週</span>
             </div>
             <div class="booking-desc">
-              家人手機設定吃到飽 eSIM。冬季務必加保「海外突發疾病醫療險」與「旅遊不便險（雪季班機延誤必備）」。
+              手機設定吃到飽 eSIM。冬季加保海外突發疾病醫療險與旅遊不便險（因應雪季天候延誤）。
             </div>
-            <div class="booking-timing">⏰ 建議時間：出發前 1~2 週內</div>
+            <div class="booking-timing">⏰ 出發前 1~2 週內</div>
           </div>
 
         </div>
@@ -1494,7 +1636,7 @@
     </div>
 
     <!-- ==============================================================
-         分頁 5: 費用預估與貼心備忘
+         分頁 5: 費用預估與出行叮嚀
     ============================================================== -->
     <div id="budget-view" class="view-section">
       <div class="bottom-info-grid">
@@ -1529,7 +1671,7 @@
               <tr>
                 <td><strong>住宿費用 (6晚)</strong></td>
                 <td class="amount-cell">NT$ 16,000 ~ 20,000</td>
-                <td>3晚海鮮Buffet溫泉 (約NT$4,000/晚) + 3晚平價商旅 (約NT$1,800/晚)</td>
+                <td>3晚海鮮百匯溫泉 (約NT$4,000/晚) + 3晚平價商旅 (約NT$1,800/晚)</td>
               </tr>
               <tr>
                 <td><strong>滑雪體驗裝備</strong></td>
@@ -1539,7 +1681,7 @@
               <tr>
                 <td><strong>餐飲與門票</strong></td>
                 <td class="amount-cell">NT$ 6,000 ~ 8,000</td>
-                <td>涵蓋函館山纜車、朝市海鮮、湯咖哩、成吉思汗烤肉</td>
+                <td>函館山纜車、朝市海鮮、湯咖哩、成吉思汗烤肉</td>
               </tr>
               <tr>
                 <td><strong>小V鍋採買 (個人自費)</strong></td>
@@ -1549,39 +1691,39 @@
               <tr>
                 <td><strong>保險與 eSIM</strong></td>
                 <td class="amount-cell">NT$ 1,200</td>
-                <td>冬季海外突發疾病醫療險 + 日本高速上網卡</td>
+                <td>海外突發疾病醫療險 + 日本高速上網卡</td>
               </tr>
               <tr style="background: rgba(57, 91, 80, 0.08);">
                 <td><strong>基本花費總計 (每人)</strong></td>
                 <td class="amount-cell" style="font-size: 15px; color: var(--c-pine-deep);">約 NT$ 48,000 ~ 64,000</td>
-                <td><em>不含個人血拼伴手禮與小V鍋自費</em></td>
+                <td><em>不含個人採買伴手禮與小V鍋自費</em></td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <!-- 實用貼心叮嚀 -->
+        <!-- 實用叮嚀 -->
         <div class="notes-panel">
           <div class="section-title">雪季實用出行叮嚀</div>
 
           <div class="note-card">
-            <strong>🥾 1. 步伐與防滑安全：</strong>
-            雪地行走切忌穿一般平底球鞋。建議備妥高筒防滑防水靴，抵達北海道超商時可加購一組可拆式「橡膠冰爪（約 1,000 日圓）」，套在鞋底防滑效果非常顯著。
+            <strong>🥾 1. 步伐與防滑：</strong>
+            雪地行走切忌穿一般平底球鞋。建議備妥高筒防滑防水靴，抵達北海道超商時可加購一組可拆式「橡膠冰爪（約 1,000 日圓）」，套在鞋底防滑效果顯著。
           </div>
 
           <div class="note-card">
-            <strong>🧳 2. 小V鍋打包與電壓須知：</strong>
+            <strong>🧳 2. 小V鍋打包與電壓：</strong>
             Vermicular 鑄鐵鍋淨重約 3.5~5 公斤，請務必<strong>保留原廠發泡防撞包裝，裝入 28 吋以上的大行李箱辦理託運</strong>（不可手提上機）。日本 100V 電器在台灣使用一般皆可正常通電。
           </div>
 
           <div class="note-card">
-            <strong>🧣 3. 室內外溫差與洋蔥穿搭：</strong>
-            北海道室內暖氣非常足夠（常溫維持 22~24 度）。建議以「一件發熱衣 + 針織毛衣 + 防風保暖羽絨長外套」為主，進室內只需脫下外套即可，避免穿太多層不便脫換。
+            <strong>🧣 3. 室內外溫差與穿搭：</strong>
+            北海道室內暖氣非常足夠（常溫維持 22~24 度）。建議以「一件發熱衣 + 針織毛衣 + 防風保暖羽絨長外套」為主，進室內只需脫下外套即可，避免穿過多層不便穿脫。
           </div>
 
           <div class="note-card">
-            <strong>🚕 4. 短程善用計程車省腳力：</strong>
-            函館車站至金森倉庫、札幌飯店至狸小路，若稍感疲倦，市區計程車起跳約 600~700 日圓，2~4 人共乘既划算又能確實將步數維持在最舒適的範圍。
+            <strong>🚕 4. 短程善用計程車省步數：</strong>
+            函館車站至金森倉庫、札幌飯店至狸小路，若稍感疲倦，市區計程車起跳約 600~700 日圓，多人共乘既划算又能將步數維持在最舒適的範圍。
           </div>
         </div>
 
