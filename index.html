@@ -211,7 +211,7 @@
     }
 
     /* -------------------------------------------------------------
-       SECTION 1: 視覺化行事曆（乾淨純標題版，絕不吃字）
+       SECTION 1: 視覺化行事曆
     ------------------------------------------------------------- */
     .calendar-container {
       background: var(--bg-card);
@@ -342,7 +342,6 @@
     }
     .cal-day-col:last-child { border-right: none; }
 
-    /* 事件卡片：純時間與標題，不放備註文字，完全避免溢出被吃掉 */
     .cal-ev {
       position: absolute;
       left: 3px;
@@ -409,7 +408,7 @@
     }
 
     /* -------------------------------------------------------------
-       SECTION 2: 每日完整行程（收納所有詳細備註）
+       SECTION 2: 每日完整行程
     ------------------------------------------------------------- */
     .itinerary-grid {
       display: grid;
@@ -505,7 +504,6 @@
       line-height: 1.45;
     }
 
-    /* 詳細時程備註區（承接原本行事曆的文字說明） */
     .schedule-notes-box {
       background: rgba(247, 249, 253, 0.85);
       border: 1px solid var(--border-soft);
@@ -570,7 +568,10 @@
       font-weight: 500;
     }
 
-    .shopping-container {
+    /* -------------------------------------------------------------
+       SECTION 3 & 4: 清單通用樣式 (購物清單 & 預訂清單共用互動勾選)
+    ------------------------------------------------------------- */
+    .interactive-list-container {
       background: var(--bg-card);
       border: 1px solid var(--border-soft);
       border-radius: 18px;
@@ -580,14 +581,14 @@
       margin-bottom: 30px;
     }
 
-    .shopping-input-bar {
+    .input-bar {
       display: flex;
       gap: 10px;
       margin-bottom: 22px;
       flex-wrap: wrap;
     }
 
-    .shopping-input {
+    .item-input {
       flex: 1;
       min-width: 260px;
       padding: 11px 16px;
@@ -600,11 +601,11 @@
       transition: border-color 0.2s ease;
     }
 
-    .shopping-input:focus {
+    .item-input:focus {
       border-color: var(--c-pine-deep);
     }
 
-    .btn-add-item {
+    .btn-add {
       background: var(--c-pine-deep);
       color: #ffffff;
       border: none;
@@ -619,17 +620,17 @@
       gap: 6px;
     }
 
-    .btn-add-item:hover {
+    .btn-add:hover {
       opacity: 0.9;
     }
 
-    .shop-items-grid {
+    .items-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 12px;
     }
 
-    .shop-item-card {
+    .checkable-card {
       background: rgba(255, 255, 255, 0.85);
       border: 1px solid var(--border-card);
       border-radius: 12px;
@@ -641,22 +642,22 @@
       cursor: pointer;
     }
 
-    .shop-item-card:hover {
+    .checkable-card:hover {
       background: #ffffff;
       border-color: var(--c-sky-soft);
     }
 
-    .shop-item-card.checked {
+    .checkable-card.checked {
       background: rgba(197, 209, 235, 0.25);
       border-color: transparent;
     }
 
-    .shop-item-card.checked .shop-text {
+    .checkable-card.checked .item-main-text {
       text-decoration: line-through;
       color: var(--c-slate-muted);
     }
 
-    .shop-left {
+    .card-left {
       display: flex;
       align-items: center;
       gap: 12px;
@@ -676,7 +677,7 @@
       background: #ffffff;
     }
 
-    .shop-item-card.checked .custom-checkbox {
+    .checkable-card.checked .custom-checkbox {
       background: var(--c-pine-deep);
       border-color: var(--c-pine-deep);
       color: #ffffff;
@@ -689,28 +690,29 @@
       display: none;
     }
 
-    .shop-item-card.checked .custom-checkbox::after {
+    .checkable-card.checked .custom-checkbox::after {
       display: block;
     }
 
-    .shop-text-wrap {
+    .item-text-wrap {
       display: flex;
       flex-direction: column;
     }
 
-    .shop-text {
+    .item-main-text {
       font-size: 14px;
       font-weight: 600;
       color: var(--c-forest-dark);
     }
 
-    .shop-badge {
+    .item-badge {
       font-size: 11px;
       color: var(--c-slate-muted);
       margin-top: 2px;
+      line-height: 1.35;
     }
 
-    .btn-del-item {
+    .btn-del {
       background: transparent;
       border: none;
       color: #9ca3af;
@@ -721,81 +723,13 @@
       transition: color 0.15s ease;
     }
 
-    .btn-del-item:hover {
+    .btn-del:hover {
       color: #ef4444;
     }
 
-    .booking-container {
-      background: var(--bg-card);
-      border: 1px solid var(--border-soft);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: var(--shadow-md);
-      backdrop-filter: blur(12px);
-      margin-bottom: 30px;
-    }
-
-    .booking-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 16px;
-      margin-top: 12px;
-    }
-
-    .booking-card {
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      padding: 16px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .booking-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .booking-title {
-      font-size: 14.5px;
-      font-weight: 700;
-      color: var(--c-forest-dark);
-    }
-
-    .booking-status {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-
-    .status-urgent {
-      background: rgba(239, 68, 68, 0.12);
-      color: #b91c1c;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .status-warm {
-      background: rgba(234, 179, 8, 0.15);
-      color: #854d0e;
-      border: 1px solid rgba(234, 179, 8, 0.3);
-    }
-
-    .booking-desc {
-      font-size: 12.5px;
-      color: var(--c-slate-muted);
-      line-height: 1.5;
-    }
-
-    .booking-timing {
-      font-size: 11.5px;
-      color: var(--c-pine-deep);
-      font-weight: 600;
-      margin-top: 4px;
-    }
-
+    /* -------------------------------------------------------------
+       SECTION 5: 費用預估與出行叮嚀
+    ------------------------------------------------------------- */
     .bottom-info-grid {
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
@@ -908,7 +842,7 @@
       </button>
     </div>
 
-    <!-- 分頁 1: 視覺化行事曆 (乾淨排版，純時間與標題) -->
+    <!-- 分頁 1: 視覺化行事曆 -->
     <div id="calendar-view" class="view-section active">
       <div class="calendar-container">
         
@@ -1009,9 +943,14 @@
 
             <!-- Day 1: 函館 -->
             <div class="cal-day-col">
-              <div class="cal-ev ev-transit" style="top: 26px; height: 78px;">
-                <span class="ev-time-text">07:30 - 09:00</span>
+              <div class="cal-ev ev-transit" style="top: 78px; height: 65px;">
+                <span class="ev-time-text">08:30 - 09:45</span>
                 <div class="ev-title-text">🚅 嘉義 ➔ 桃機一航</div>
+              </div>
+
+              <div class="cal-ev ev-transit" style="top: 156px; height: 78px;">
+                <span class="ev-time-text">10:00 - 11:30</span>
+                <div class="ev-title-text">🧳 桃機報到出境</div>
               </div>
 
               <div class="cal-ev ev-transit" style="top: 260px; height: 234px;">
@@ -1273,7 +1212,7 @@
       </div>
     </div>
 
-    <!-- 分頁 2: 每日完整行程 (收納所有時程備註細節) -->
+    <!-- 分頁 2: 每日完整行程 -->
     <div id="cards-view" class="view-section">
       <div class="section-title">每日行程安排</div>
       
@@ -1296,7 +1235,7 @@
             </div>
             <div class="core-row">
               <span class="core-label label-trans">🚗 交通</span>
-              <span class="core-desc">嘉義高鐵 ➔ 桃機 ➔ 航班 12:00-16:30 飛函館 ➔ 函館帝產巴士直達市區（20分） ➔ 計程車接駁纜車站</span>
+              <span class="core-desc">約 08:30 嘉義出發 ➔ 約 10:00 抵達桃機一航 ➔ 航班 12:00-16:30 飛函館 ➔ 函館帝產巴士直達市區（20分） ➔ 計程車接駁纜車站</span>
             </div>
             <div class="core-row">
               <span class="core-label label-lug">🧳 行李</span>
@@ -1307,8 +1246,9 @@
           <div class="schedule-notes-box">
             <div class="schedule-notes-title">📌 當日時程詳細備忘</div>
             <ul class="schedule-notes-list">
-              <li><span class="time-tag">07:30 - 09:00</span><span>搭乘高鐵至桃園站，轉乘機場捷運直達第一航廈。</span></li>
-              <li><span class="time-tag">12:00 - 16:30</span><span>直飛函館機場，航程約 4.5 小時，機上享用午餐。出關約 40 分鐘。</span></li>
+              <li><span class="time-tag">08:30 - 09:45</span><span>搭乘高鐵由嘉義前往桃園站，轉乘機場捷運直達第一航廈。</span></li>
+              <li><span class="time-tag">10:00 - 11:30</span><span>抵達機場航空公司櫃檯，從容辦理登機報到、行李託運與出境通關。</span></li>
+              <li><span class="time-tag">12:00 - 16:30</span><span>直飛函館機場，航程約 4.5 小時，機上享用午餐。入境通關約 40 分鐘。</span></li>
               <li><span class="time-tag">17:30 - 18:15</span><span>Century Marina 辦妥入住手續放行李。</span></li>
               <li><span class="time-tag">18:30 - 19:45</span><span>搭計程車轉乘大型登山纜車直達山頂，平穩省力賞雙弧線白雪夜景。</span></li>
               <li><span class="time-tag">20:00 - 21:30</span><span>享用飯店知名奢華海鮮 Buffet 吃到飽。</span></li>
@@ -1582,215 +1522,229 @@
       </div>
     </div>
 
-    <!-- 分頁 3: 購物採買清單 -->
+    <!-- 分頁 3: 購物採買清單 (可互動勾選、新增、刪除) -->
     <div id="shopping-view" class="view-section">
-      <div class="shopping-container">
+      <div class="interactive-list-container">
         <div class="section-title">購物採買清單</div>
         <p style="font-size: 13.5px; color: var(--c-slate-muted); margin-bottom: 18px;">
           收錄北海道在地代表性銘菓、雪季裝備與指定廚具：
         </p>
 
-        <div class="shopping-input-bar">
-          <input type="text" id="new-item-input" class="shopping-input" placeholder="輸入想增加的採買項目..." onkeypress="if(event.key==='Enter') addShoppingItem()">
-          <button class="btn-add-item" onclick="addShoppingItem()">
+        <div class="input-bar">
+          <input type="text" id="new-shop-input" class="item-input" placeholder="輸入想增加的採買項目..." onkeypress="if(event.key==='Enter') addShoppingItem()">
+          <button class="btn-add" onclick="addShoppingItem()">
             <span>＋</span> 新增項目
           </button>
         </div>
 
-        <div class="shop-items-grid" id="shopping-list-grid">
+        <div class="items-grid" id="shopping-list-grid">
           
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">Vermicular 小V鍋（鑄鐵琺瑯平底鍋 或 IH電子鑄鐵鍋）</span>
-                <span class="shop-badge">📍 Day 6 札幌站 Bic Camera 或 大丸百貨（憑護照辦理免稅退稅，直接提回飯店裝箱）</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">Vermicular 小V鍋（鑄鐵琺瑯平底鍋 或 IH電子鑄鐵鍋）</span>
+                <span class="item-badge">📍 Day 6 札幌站 Bic Camera 或 大丸百貨（憑護照辦理免稅退稅，直接提回飯店裝箱）</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">鞋底防滑橡膠冰爪（簡易防滑爪）</span>
-                <span class="shop-badge">📍 Day 1 抵達函館超商 (Seicomart/7-11) 購買，套在靴底防滑</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">鞋底防滑橡膠冰爪（簡易防滑爪）</span>
+                <span class="item-badge">📍 Day 1 抵達函館超商 (Seicomart/7-11) 購買，套在靴底防滑</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">Snaffle's 輕乳酪起司蛋糕（Catchcakes）</span>
-                <span class="shop-badge">📍 函館限定！金森紅磚倉庫門市或函館車站門市</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">Snaffle's 輕乳酪起司蛋糕（Catchcakes）</span>
+                <span class="item-badge">📍 函館限定！金森紅磚倉庫門市或函館車站門市</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">北菓樓「開拓おかき」道產米果（枝幸帆立貝/增毛甜蝦口味）</span>
-                <span class="shop-badge">📍 小樽童話十字路口本店（北海道正統鹹香伴手禮首選）</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">北菓樓「開拓おかき」道產米果（枝幸帆立貝/增毛甜蝦口味）</span>
+                <span class="item-badge">📍 小樽童話十字路口本店（北海道正統鹹香伴手禮首選）</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">北菓樓「妖精之森」年輪蛋糕 & 夢不思議巨大泡芙</span>
-                <span class="shop-badge">📍 小樽本店限定下午茶現吃與精緻盒裝</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">北菓樓「妖精之森」年輪蛋糕 & 夢不思議巨大泡芙</span>
+                <span class="item-badge">📍 小樽本店限定下午茶現吃與精緻盒裝</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">六花亭「判官餅」（蕎麥麻糬包紅豆餡，僅神宮店現烤）</span>
-                <span class="shop-badge">📍 北海道神宮茶屋限定（現烤熱騰騰享用）</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">六花亭「判官餅」（蕎麥麻糬包紅豆餡，僅神宮店現烤）</span>
+                <span class="item-badge">📍 北海道神宮茶屋限定（現烤熱騰騰享用）</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">六花亭 蘭姆葡萄十勝夾心奶油酥餅（Marusei Butter Sand）</span>
-                <span class="shop-badge">📍 札幌狸小路門市或百貨專櫃</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">六花亭 蘭姆葡萄十勝夾心奶油酥餅（Marusei Butter Sand）</span>
+                <span class="item-badge">📍 札幌狸小路門市或百貨專櫃</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">LeTAO「雙層乳酪蛋糕」（Double Fromage 原味/宇治抹茶）</span>
-                <span class="shop-badge">📍 小樽童話十字路口總店</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">LeTAO「雙層乳酪蛋糕」（Double Fromage 原味/宇治抹茶）</span>
+                <span class="item-badge">📍 小樽童話十字路口總店</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">北見天然薄荷油（噴霧或滾珠棒）</span>
-                <span class="shop-badge">📍 北海道名產，狸小路藥妝或土產店</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">北見天然薄荷油（噴霧或滾珠棒）</span>
+                <span class="item-badge">📍 北海道名產，狸小路藥妝或土產店</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="shop-item-card" onclick="toggleShop(this)">
-            <div class="shop-left">
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
               <div class="custom-checkbox"></div>
-              <div class="shop-text-wrap">
-                <span class="shop-text">常備品（合利他命 EX Plus、EVE、大正微粒、防裂護手霜）</span>
-                <span class="shop-badge">📍 札幌狸小路 鶴羽藥妝 / 札幌藥妝</span>
+              <div class="item-text-wrap">
+                <span class="item-main-text">常備品（合利他命 EX Plus、EVE、大正微粒、防裂護手霜）</span>
+                <span class="item-badge">📍 札幌狸小路 鶴羽藥妝 / 札幌藥妝</span>
               </div>
             </div>
-            <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
         </div>
       </div>
     </div>
 
-    <!-- 分頁 4: 行前預訂清單 -->
+    <!-- 分頁 4: 行前預訂清單 (升級為與購物清單相同的互動勾選卡片模式) -->
     <div id="booking-view" class="view-section">
-      <div class="booking-container">
+      <div class="interactive-list-container">
         <div class="section-title">行前預訂清單</div>
-        <p style="font-size: 13.5px; color: var(--c-slate-muted); margin-bottom: 12px;">
-          雪季期間熱門車次與飯店較為搶手，建議依照下列建議時程安排：
+        <p style="font-size: 13.5px; color: var(--c-slate-muted); margin-bottom: 18px;">
+          依照建議時程陸續完成預定，點擊即可勾選完成項目：
         </p>
 
-        <div class="booking-grid">
+        <div class="input-bar">
+          <input type="text" id="new-booking-input" class="item-input" placeholder="輸入想增加的預訂項目（例如：預約特定餐廳、保險...）" onkeypress="if(event.key==='Enter') addBookingItem()">
+          <button class="btn-add" onclick="addBookingItem()">
+            <span>＋</span> 新增項目
+          </button>
+        </div>
+
+        <div class="items-grid" id="booking-list-grid">
           
-          <div class="booking-card">
-            <div class="booking-header">
-              <span class="booking-title">🏨 3 家主要飯店訂房</span>
-              <span class="booking-status status-urgent">建議優先</span>
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">3 家主要飯店訂房（函館2晚 / 洞爺湖1晚 / 札幌3晚）</span>
+                <span class="item-badge">📍 Century Marina函館、乃之風/萬世閣、Vessel Campana薄野（出發前 2~3 個月）</span>
+              </div>
             </div>
-            <div class="booking-desc">
-              1. 函館 Century Marina（連住2晚・海鮮早餐）<br>
-              2. 洞爺湖 乃之風 / 萬世閣（住1晚・湖景早晚餐）<br>
-              3. 札幌 Vessel Campana（連住3晚・海鮮早餐）
-            </div>
-            <div class="booking-timing">⏰ 出發前 2~3 個月前訂房</div>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="booking-card">
-            <div class="booking-header">
-              <span class="booking-title">🚆 JR 特急北斗號 指定席</span>
-              <span class="booking-status status-urgent">需大行李席</span>
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">JR 特急北斗號 指定席（附特大行李席）</span>
+                <span class="item-badge">📍 3/2 函館➔洞爺、3/3 洞爺➔札幌，JR 官網預訂指定席（乘車日 1 個月前）</span>
+              </div>
             </div>
-            <div class="booking-desc">
-              1. 3/2 函館 ➔ 洞爺（約1小時45分）<br>
-              2. 3/3 洞爺 ➔ 札幌（約1小時55分）<br>
-              務必提前於 JR 官網預訂「附特大行李放置處」之指定席座位。
-            </div>
-            <div class="booking-timing">⏰ 乘車日 1 個月前開放訂票</div>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="booking-card">
-            <div class="booking-header">
-              <span class="booking-title">🚌 札幌國際滑雪場 直達巴士</span>
-              <span class="booking-status status-warm">建議預先</span>
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">札幌國際滑雪場 直達巴士（Resort Liner）</span>
+                <span class="item-badge">📍 3/4 札幌站前巴士總站往返滑雪場專車（出發前 3~4 週）</span>
+              </div>
             </div>
-            <div class="booking-desc">
-              3/4 札幌站前巴士總站直達札幌國際滑雪場專車（滑雪巴士號 Resort Liner），座位舒適有底層行李艙。
-            </div>
-            <div class="booking-timing">⏰ 出發前 3~4 週</div>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="booking-card">
-            <div class="booking-header">
-              <span class="booking-title">⛷️ 滑雪體驗 裝備/課程</span>
-              <span class="booking-status status-warm">線上先選</span>
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">滑雪體驗 裝備尺寸與課程線上預選</span>
+                <span class="item-badge">📍 官網預先選定雪板/雪靴租借尺寸，現場直接取裝備（出發前 3~4 週）</span>
+              </div>
             </div>
-            <div class="booking-desc">
-              若想體驗雙板滑雪，可預先於官網預約雪板/雪靴租借尺寸，現場直接領取免排隊。
-            </div>
-            <div class="booking-timing">⏰ 出發前 3~4 週</div>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="booking-card">
-            <div class="booking-header">
-              <span class="booking-title">🚅 嘉義-桃園 高鐵早鳥票</span>
-              <span class="booking-status status-warm">乘車前28天</span>
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">嘉義-桃園 高鐵早鳥對號座車票</span>
+                <span class="item-badge">📍 2/28 早上出發、3/6 下午返程（乘車前 28 天零時開放）</span>
+              </div>
             </div>
-            <div class="booking-desc">
-              2/28 早晨嘉義出發至桃園高鐵站、3/6 下午返回嘉義的高鐵對號座車票。
-            </div>
-            <div class="booking-timing">⏰ 乘車前 28 天零時開放</div>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
-          <div class="booking-card">
-            <div class="booking-header">
-              <span class="booking-title">📶 日本 eSIM 網路卡 & 旅平險</span>
-              <span class="booking-status status-warm">出發前2週</span>
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">日本 eSIM 高速上網卡</span>
+                <span class="item-badge">📍 全員手機設定吃到飽 eSIM 網卡（出發前 1~2 週）</span>
+              </div>
             </div>
-            <div class="booking-desc">
-              手機設定吃到飽 eSIM。冬季加保海外突發疾病醫療險與旅遊不便險（因應雪季天候延誤）。
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
+          </div>
+
+          <div class="checkable-card" onclick="toggleCard(this)">
+            <div class="card-left">
+              <div class="custom-checkbox"></div>
+              <div class="item-text-wrap">
+                <span class="item-main-text">海外突發疾病醫療險 & 旅遊不便險</span>
+                <span class="item-badge">📍 雪季班機延誤與冬季防滑突發醫療保障（出發前 1~2 週）</span>
+              </div>
             </div>
-            <div class="booking-timing">⏰ 出發前 1~2 週內</div>
+            <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
           </div>
 
         </div>
@@ -1899,35 +1853,64 @@
       btn.classList.add('active');
     }
 
-    function toggleShop(el) {
+    // 卡片勾選切換
+    function toggleCard(el) {
       el.classList.toggle('checked');
     }
 
-    function deleteShop(event, btn) {
+    // 卡片刪除
+    function deleteCard(event, btn) {
       event.stopPropagation();
-      const card = btn.closest('.shop-item-card');
+      const card = btn.closest('.checkable-card');
       card.remove();
     }
 
+    // 新增購物採買項目
     function addShoppingItem() {
-      const input = document.getElementById('new-item-input');
+      const input = document.getElementById('new-shop-input');
       const val = input.value.trim();
       if (!val) return;
 
       const grid = document.getElementById('shopping-list-grid');
       const newCard = document.createElement('div');
-      newCard.className = 'shop-item-card';
-      newCard.onclick = function() { toggleShop(this); };
+      newCard.className = 'checkable-card';
+      newCard.onclick = function() { toggleCard(this); };
 
       newCard.innerHTML = `
-        <div class="shop-left">
+        <div class="card-left">
           <div class="custom-checkbox"></div>
-          <div class="shop-text-wrap">
-            <span class="shop-text">${escapeHtml(val)}</span>
-            <span class="shop-badge">📍 自由採買項目</span>
+          <div class="item-text-wrap">
+            <span class="item-main-text">${escapeHtml(val)}</span>
+            <span class="item-badge">📍 自由採買項目</span>
           </div>
         </div>
-        <button class="btn-del-item" onclick="deleteShop(event, this)">✕</button>
+        <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
+      `;
+
+      grid.appendChild(newCard);
+      input.value = '';
+    }
+
+    // 新增行前預訂項目
+    function addBookingItem() {
+      const input = document.getElementById('new-booking-input');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const grid = document.getElementById('booking-list-grid');
+      const newCard = document.createElement('div');
+      newCard.className = 'checkable-card';
+      newCard.onclick = function() { toggleCard(this); };
+
+      newCard.innerHTML = `
+        <div class="card-left">
+          <div class="custom-checkbox"></div>
+          <div class="item-text-wrap">
+            <span class="item-main-text">${escapeHtml(val)}</span>
+            <span class="item-badge">📍 自由新增預訂項目</span>
+          </div>
+        </div>
+        <button class="btn-del" onclick="deleteCard(event, this)">✕</button>
       `;
 
       grid.appendChild(newCard);
@@ -1940,6 +1923,7 @@
       });
     }
 
+    // 背景輕柔雪花動畫
     const canvas = document.getElementById('snow-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
